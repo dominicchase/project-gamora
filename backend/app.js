@@ -28,5 +28,6 @@ app.post(`${api}/products`, (req, res) => {
 });
 
 app.listen(3000, () => {
+  console.log(api);
   console.log("server is running...");
 });
