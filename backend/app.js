@@ -1,33 +1,40 @@
+// #region imports
 const express = require("express");
 const app = express();
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const mongoose = require("mongoose");
+require("dotenv/config");
+// #endregion
+
+const api = process.env.API_URL;
 
 // middleware
 app.use(bodyParser.json());
 app.use(morgan("tiny"));
 
-require("dotenv/config");
+// routers
+const categoriesRouter = require("./routers/categories");
+app.use(`${api}/categories`, categoriesRouter);
 
-const api = process.env.API_URL;
+const gamesRouter = require("./routers/games");
+app.use(`${api}/games`, gamesRouter);
 
-app.get(`${api}/products`, (req, res) => {
-  const product = {
-    id: 1,
-    name: "Hair dresser",
-    img: "some_url",
-  };
+const ordersRouter = require("./routers/orders");
+app.use(`${api}/orders`, ordersRouter);
 
-  res.send(product);
-});
+const usersRouter = require("./routers/users");
+app.use(`${api}/users`, usersRouter);
 
-app.post(`${api}/products`, (req, res) => {
-  const newProduct = req.body;
-  console.log(newProduct);
-  res.send(newProduct);
-});
+mongoose
+  .connect(process.env.CONNECTION_STRING, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    dbName: "gameshop-db",
+  })
+  .then(() => console.log("connected to db"))
+  .catch((err) => err);
 
 app.listen(3000, () => {
-  console.log(api);
   console.log("server is running...");
 });
