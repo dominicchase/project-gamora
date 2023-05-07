@@ -1,9 +1,11 @@
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 
-const categorySchema = new mongoose.Schema({
-  name: String,
-  image: String,
-  quantity: { type: Number, required: true },
-});
+// const categorySchema = new mongoose.Schema({
+//   name: {
+//     type: String,
+//     required: true,
+//   },
 
-exports.Category = mongoose.model("Category", categorySchema);
+// });
+
+// exports.Category = mongoose.model("Category", categorySchema);
