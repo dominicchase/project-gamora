@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 const mongoose = require("mongoose");
 
+// getGames
 router.get("/", async (req, res) => {
   let filter = {};
 
@@ -19,6 +20,7 @@ router.get("/", async (req, res) => {
   res.send(gameList);
 });
 
+// getGame by ID
 router.get("/:id", async (req, res) => {
   const game = await Game.findById(req.params.id);
 
@@ -34,6 +36,7 @@ router.get("/:id", async (req, res) => {
 // ---------------------------------
 
 // use this as admin to make new games for sale ??
+// createGame
 router.post("/", async (req, res) => {
   const {
     name,
@@ -65,6 +68,7 @@ router.post("/", async (req, res) => {
 });
 
 // use this as admin to update games for sale ??
+// updateGame
 router.put("/:id", async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid ID...");
@@ -102,6 +106,7 @@ router.put("/:id", async (req, res) => {
 });
 
 // use this as admin to delete games for sale ??
+// deleteGame
 router.delete("/:id", async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.id)) {
     return res.status(400).send("Invalid ID...");

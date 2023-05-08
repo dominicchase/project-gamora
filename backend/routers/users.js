@@ -1,9 +1,12 @@
 const { User } = require("../models/user");
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
+// getUsers
 router.get("/", async (req, res) => {
-  const userList = await User.find();
+  const userList = await User.find().select("-passwordHash");
 
   if (!userList) {
     res.status(500).json({ success: false });
@@ -12,11 +15,23 @@ router.get("/", async (req, res) => {
   res.send(userList);
 });
 
+// getUser by ID
+router.get("/:id", async (req, res) => {
+  const userList = await User.findById(req.params.id).select("-passwordHash");
+
+  if (!userList) {
+    res.status(500).json({ success: false });
+  }
+
+  res.send(userList);
+});
+
+// createUser
 router.post("/", async (req, res) => {
   const {
     name,
     email,
-    passwordHash,
+    password,
     phone,
     isAdmin,
     country,
@@ -30,7 +45,7 @@ router.post("/", async (req, res) => {
   var user = new User({
     name,
     email,
-    passwordHash,
+    passwordHash: bcrypt.hashSync(password, 10),
     phone,
     isAdmin,
     country,
@@ -48,6 +63,33 @@ router.post("/", async (req, res) => {
   }
 
   return res.send(user);
+});
+
+// password: MyTestPassword10!
+
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+  const secret = process.env.SECRET;
+
+  if (!user) {
+    return res.status(400).send("User not found...");
+  }
+
+  if (bcrypt.compareSync(password, user.passwordHash)) {
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        isAdmin: user.isAdmin,
+      },
+      secret,
+      { expiresIn: "1d" }
+    );
+    return res.status(200).send({ email, token });
+  } else {
+    return res.status(400).send("Incorrect password...");
+  }
 });
 
 module.exports = router;
