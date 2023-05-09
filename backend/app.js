@@ -1,12 +1,12 @@
 // #region imports
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
-const mongoose = require("mongoose");
-const cors = require("cors");
 const authJwt = require("./helpers/jwt");
+const cors = require("cors");
 const errorHandler = require("./helpers/errorHandler");
+const mongoose = require("mongoose");
+const morgan = require("morgan");
+
 require("dotenv/config");
 // #endregion
 
@@ -15,12 +15,11 @@ const api = process.env.API_URL;
 // middleware
 app.use(authJwt());
 
-app.use(bodyParser.json());
-
 app.use(cors());
 app.options("*", cors());
 
 app.use(errorHandler);
+app.use(express.json());
 
 app.use(morgan("tiny"));
 
@@ -41,7 +40,7 @@ mongoose
     dbName: "gameshop-db",
   })
   .then(() => console.log("connected to db"))
-  .catch((err) => err);
+  .catch((err) => console.log(err));
 
 app.listen(3000, () => {
   console.log("server is running...");

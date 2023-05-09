@@ -16,16 +16,12 @@ function authJwt() {
   });
 }
 
-async function isRevoked(req, payload, done) {
-  if (!payload.isAdmin) {
-    done(null, true);
+async function isRevoked(req, token) {
+  if (!token.payload.isAdmin) {
+    return true;
   }
 
-  done();
+  return false;
 }
 
 module.exports = authJwt;
-
-// token for 5/7
-
-// eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NDU4MzhmMTMzODlhN2IwNTc2N2VlZmIiLCJpc0FkbWluIjpmYWxzZSwiaWF0IjoxNjgzNTEwNDEyLCJleHAiOjE2ODM1OTY4MTJ9.2v01o2LURO7dec2hc2D3DNBNHoeWOrCPPlVoQ03a9R4

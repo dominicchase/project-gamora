@@ -15,6 +15,17 @@ router.get("/", async (req, res) => {
   res.send(userList);
 });
 
+// getUserCount
+router.get("/:count", async (req, res) => {
+  const userCount = await User.countDocuments();
+
+  if (!userCount) {
+    res.status(500).json({ success: false });
+  }
+
+  res.send({ userCount });
+});
+
 // getUser by ID
 router.get("/:id", async (req, res) => {
   const userList = await User.findById(req.params.id).select("-passwordHash");
