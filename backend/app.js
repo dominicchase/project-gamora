@@ -30,7 +30,7 @@ app.use(`${api}/games`, gamesRouter);
 const ordersRouter = require("./routers/orders");
 app.use(`${api}/orders`, ordersRouter);
 
-const usersRouter = require("./routers/users");
+const usersRouter = require("./routers/users/users");
 app.use(`${api}/users`, usersRouter);
 
 mongoose
@@ -39,8 +39,8 @@ mongoose
     useUnifiedTopology: true,
     dbName: "gameshop-db",
   })
-  .then(() => console.log("connected to db"))
-  .catch((err) => console.log(err));
+  .then(() => console.log("connected to db"));
+// .catch((err) => console.log(err));
 
 app.listen(3000, () => {
   console.log("server is running...");
