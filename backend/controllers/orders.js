@@ -5,12 +5,10 @@ module.exports = {
   createOrder: async (req, res) => {
     const { body } = req;
 
-    console.log(body.orderItems);
-
     const ids = Promise.all(
-      body.orderItems.map(async ({ product, quantity }) => {
+      body.orderItems.map(async ({ game, quantity }) => {
         var orderItem = new OrderItem({
-          product,
+          game,
           quantity,
         });
 
@@ -21,8 +19,6 @@ module.exports = {
     );
 
     const orderIds = await ids;
-
-    console.log(orderIds);
 
     var order = new Order({
       city: body.city,
@@ -46,8 +42,24 @@ module.exports = {
     res.send(order);
   },
 
-  getOrder: async (req, res) => {
-    const orderList = await Order.find();
+  getOrderById: async (req, res) => {
+    console.log(req.query);
+    const order = await Order.findById(req.query.id)
+      .populate("user")
+      .populate({ path: "orderItems", populate: "game" });
+
+    if (!order) {
+      res.status(500).json({ success: false });
+    }
+
+    res.send(order);
+  },
+
+  getOrders: async (req, res) => {
+    const orderList = await Order.find()
+      .populate("user")
+      .populate("orderItems")
+      .sort({ date: -1 });
 
     if (!orderList) {
       res.status(500).json({ success: false });
