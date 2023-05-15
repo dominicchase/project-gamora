@@ -1,3 +1,4 @@
+const { Game } = require("../models/game");
 const { Order } = require("../models/order");
 const { OrderItem } = require("../models/orderItem");
 
@@ -20,12 +21,20 @@ module.exports = {
 
     const orderIds = await ids;
 
+    const totalPrice = await body.orderItems.reduce(
+      async (accumulator, orderItem) => {
+        const game = await Game.findById(orderItem.game);
+        return (await accumulator) + game.price * orderItem.quantity;
+      },
+      0
+    );
+
     var order = new Order({
       city: body.city,
       country: body.country,
       orderItems: orderIds,
       phone: body.phone,
-      price: body.price,
+      price: totalPrice,
       shippingAddress1: body.shippingAddress1,
       shippingAddress2: body.shippingAddress2,
       status: body.status,
@@ -42,8 +51,31 @@ module.exports = {
     res.send(order);
   },
 
+  deleteOrder: async (req, res) => {
+    Order.findByIdAndRemove(req.query.id)
+      .then(async (order) => {
+        if (order) {
+          await order.orderItems.forEach(async (orderItem) => {
+            await OrderItem.findByIdAndRemove(orderItem);
+          });
+
+          return res
+            .status(200)
+            .json({ success: true, message: "Deleted order..." });
+        } else {
+          return res
+            .status(404)
+            .json({ success: false, message: "Failed to delete order..." });
+        }
+      })
+      .catch((err) =>
+        res
+          .status(err.status)
+          .json({ success: false, message: err.inner.message })
+      );
+  },
+
   getOrderById: async (req, res) => {
-    console.log(req.query);
     const order = await Order.findById(req.query.id)
       .populate("user")
       .populate({ path: "orderItems", populate: "game" });
@@ -66,5 +98,39 @@ module.exports = {
     }
 
     res.send(orderList);
+  },
+
+  // 3 total orders, 2 for ca and 1 for 37
+
+  getUserOrders: async (req, res) => {
+    var userOrderList = await Order.find({ user: req.query.id })
+      .populate("user")
+      .populate({ path: "orderItems", populate: "game" });
+
+    if (!userOrderList) {
+      res
+        .status(500)
+        .json({ success: false, message: "Failed to fetch orders..." });
+    }
+
+    res.send(userOrderList);
+  },
+
+  updateOrder: async (req, res) => {
+    const order = await Order.findByIdAndUpdate(
+      req.query.id,
+      {
+        status: req.body.status,
+      },
+      { new: true }
+    )
+      .populate("user")
+      .populate({ path: "orderItems", populate: "game" });
+
+    if (!order) {
+      res.status(400).json({ success: false });
+    }
+
+    res.send(order);
   },
 };
