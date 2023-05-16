@@ -1,17 +1,17 @@
 const mongoose = require("mongoose");
 
 const gameSchema = new mongoose.Schema({
-  description: {
-    type: String,
-    required: true,
-  },
+  // description: {
+  //   type: String,
+  //   required: true,
+  // },
 
-  image: {
-    type: String,
-    required: true,
-  },
+  // image: {
+  //   type: String,
+  //   required: true,
+  // },
 
-  images: [{ type: String }],
+  // images: [{ type: String }],
 
   name: {
     type: String,
@@ -26,13 +26,13 @@ const gameSchema = new mongoose.Schema({
 
   quantity: { type: Number, required: true },
 
-  richDescription: {
-    type: String,
-    default: "",
-  },
+  // richDescription: {
+  //   type: String,
+  //   default: "",
+  // },
 });
 
-gameSchema.virtual("id").get(function () {
+gameSchema.virtual("gameId").get(function () {
   return this._id.toHexString();
 });
 

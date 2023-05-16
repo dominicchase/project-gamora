@@ -100,8 +100,6 @@ module.exports = {
     res.send(orderList);
   },
 
-  // 3 total orders, 2 for ca and 1 for 37
-
   getUserOrders: async (req, res) => {
     var userOrderList = await Order.find({ user: req.query.id })
       .populate("user")

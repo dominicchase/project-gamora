@@ -16,7 +16,7 @@ const {
 
 router.get("/", getGames);
 
-router.get("/:id", getGameById);
+router.get("/game/", getGameById);
 
 router.get("/game/platforms", getAllPlatforms);
 

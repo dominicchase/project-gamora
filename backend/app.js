@@ -24,6 +24,9 @@ app.use(express.json());
 app.use(morgan("tiny"));
 
 // routers
+const cartRouter = require("./routers/cart");
+app.use(`${api}/cart`, cartRouter);
+
 const gamesRouter = require("./routers/games");
 app.use(`${api}/games`, gamesRouter);
 
@@ -32,6 +35,43 @@ app.use(`${api}/orders`, ordersRouter);
 
 const usersRouter = require("./routers/users");
 app.use(`${api}/users`, usersRouter);
+
+const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+
+// const orderItems = new Map([
+//   [1, { priceInCents: 10000, name: "Learn React Today" }],
+//   [2, { priceInCents: 20000, name: "Learn CSS Today" }],
+// ]);
+
+// app.post("/pay", async (req, res) => {
+//   try {
+//     const session = await stripe.checkout.sessions.create({
+//       payment_method_types: ["card"],
+//       mode: "payment",
+//       line_items: req.body.items.map((item) => {
+//         const storeItem = orderItems.get(item.id);
+//         return {
+//           price_data: {
+//             currency: "usd",
+//             product_data: {
+//               name: storeItem.name,
+//             },
+//             unit_amount: storeItem.priceInCents,
+//           },
+//           quantity: item.quantity,
+//         };
+//       }),
+//       success_url: `${process.env.SERVER_URL}/success.html`,
+//       cancel_url: `${process.env.SERVER_URL}/cancel.html`,
+//     });
+
+//     res.json({ url: session.url });
+//   } catch (event) {
+//     res.status(500).json({ error: event.message });
+//   }
+
+//   res.json({ url: "hi" });
+// });
 
 mongoose
   .connect(process.env.CONNECTION_STRING, {
@@ -42,6 +82,6 @@ mongoose
   .then(() => console.log("connected to db"))
   .catch((err) => console.log(err));
 
-app.listen(3000, () => {
+app.listen(3001, () => {
   console.log("server is running...");
 });

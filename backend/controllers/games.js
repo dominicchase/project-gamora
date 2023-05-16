@@ -6,11 +6,11 @@ module.exports = {
   createGame: async (req, res) => {
     var game = new Game({
       name: req.body.name,
-      description: req.body.description,
-      richDescription: req.body.richDescription,
-      image: req.body.image,
+      // description: req.body.description,
+      // richDescription: req.body.richDescription,
+      // image: req.body.image,
       price: req.body.price,
-      category: req.body.category,
+      // category: req.body.category,
       quantity: req.body.quantity,
     });
 
@@ -52,29 +52,27 @@ module.exports = {
   },
 
   getGameById: async (req, res) => {
-    const game = await Game.findById(req.params.id);
-
-    if (!game) {
-      res.status(500).json({ success: false });
+    try {
+      const game = await Game.findById(req.query.id);
+      res.status(200).send(game);
+    } catch {
+      res.status(500).json({ status: 500, message: "" });
     }
-
-    res.send(game);
   },
 
   getGames: async (req, res) => {
-    let filter = {};
+    // let filter = {};
 
-    if (req.query.category) {
-      filter = { category: req.query.category };
+    // if (req.query.category) {
+    //   filter = { category: req.query.category };
+    // }
+
+    try {
+      const games = await Game.find();
+      res.status(200).send(games);
+    } catch (event) {
+      res.status(500).json({ status: 500, message: "" });
     }
-
-    const gameList = await Game.find(filter);
-
-    if (!gameList) {
-      res.status(500).json({ success: false });
-    }
-
-    res.send(gameList);
   },
 
   updateGame: async (req, res) => {
