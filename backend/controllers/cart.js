@@ -21,35 +21,37 @@ module.exports = {
         const { games } = cart;
 
         const updatedGames = await Promise.all(
-          games.map(async (game) => {
-            if (gameIds.includes(game.id)) {
-              return { ...game.toObject(), quantity: game.quantity + 1 };
-            } else return { ...game.toObject() };
+          gameIds.map(async (gameId) => {
+            const game = await Game.findById(gameId);
+
+            if (games.find(({ gameId }) => gameId == game.gameId)) {
+              return await { ...game.toObject(), quantity: game.quantity + 1 };
+            }
+
+            return await { ...game.toObject() };
           })
         );
 
-        console.log(updatedGames);
-
         const updatedCart = await Cart.findOneAndUpdate(
           { userId: req.query.userId },
-          {
-            games: updatedGames,
-          },
-          {
-            new: true,
-          }
+          { games: updatedGames },
+          { new: true }
         ).populate("games");
 
         res.status(201).send(updatedCart);
       } else {
+        const user = await User.findById(req.query.userId);
+
         const newGames = await Promise.all(
           gameIds.map(async (gameId) => await Game.findById(gameId))
         );
 
         const newCart = await Cart.create({
-          userId: req.query.userId,
+          userId: user,
           games: newGames,
         });
+
+        console.log(newCart);
 
         res.status(201).send(newCart);
       }
