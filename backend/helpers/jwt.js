@@ -11,7 +11,7 @@ function authJwt() {
     path: [
       { url: /\/api\/games(.*)/, methods: ["GET", "OPTIONS"] },
       `${API_URL}/users/login`,
-      `${API_URL}/users/register`,
+      `${API_URL}/users`,
     ],
   });
 }
