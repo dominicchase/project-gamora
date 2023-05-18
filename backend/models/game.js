@@ -32,12 +32,12 @@ const gameSchema = new mongoose.Schema({
   // },
 });
 
-gameSchema.virtual("gameId").get(function () {
-  return this._id.toHexString();
-});
+// gameSchema.virtual("gameId").get(function () {
+//   return this._id.toHexString();
+// });
 
-gameSchema.set("toJSON", {
-  virtuals: true,
-});
+// gameSchema.set("toJSON", {
+//   virtuals: true,
+// });
 
 exports.Game = mongoose.model("Game", gameSchema);

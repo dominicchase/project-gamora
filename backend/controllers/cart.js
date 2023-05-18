@@ -1,3 +1,5 @@
+const mongoose = require("mongoose");
+
 const { Cart } = require("../models/cart");
 const { Game } = require("../models/game");
 const { User } = require("../models/user");
@@ -18,42 +20,21 @@ module.exports = {
       );
 
       if (cart) {
-        const { games } = cart;
-
-        const updatedGames = await Promise.all(
-          gameIds.map(async (gameId) => {
-            const game = await Game.findById(gameId);
-
-            if (games.find(({ gameId }) => gameId == game.gameId)) {
-              return await { ...game.toObject(), quantity: game.quantity + 1 };
-            }
-
-            return await { ...game.toObject() };
-          })
-        );
-
-        const updatedCart = await Cart.findOneAndUpdate(
+        await Cart.findOneAndUpdate(
           { userId: req.query.userId },
-          { games: updatedGames },
+          { games: [...cart.games, ...req.body] },
           { new: true }
-        ).populate("games");
-
-        res.status(201).send(updatedCart);
+        )
+          .populate("games")
+          .then((cart) => res.status(201).send(cart))
+          .catch((error) => res.status(error));
       } else {
-        const user = await User.findById(req.query.userId);
-
-        const newGames = await Promise.all(
-          gameIds.map(async (gameId) => await Game.findById(gameId))
-        );
-
-        const newCart = await Cart.create({
-          userId: user,
-          games: newGames,
-        });
-
-        console.log(newCart);
-
-        res.status(201).send(newCart);
+        await Cart.create({
+          userId: req.query.userId,
+          games: req.body,
+        })
+          .then((cart) => res.send(cart))
+          .catch((error) => res.status(error));
       }
     } catch (error) {
       return res

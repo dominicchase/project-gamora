@@ -14,12 +14,12 @@ const cartSchema = mongoose.Schema({
   ],
 });
 
-cartSchema.virtual("cartId").get(function () {
-  return this._id.toHexString();
-});
+// cartSchema.virtual("cartId").get(function () {
+//   return this._id.toHexString();
+// });
 
-cartSchema.set("toJSON", {
-  virtuals: true,
-});
+// cartSchema.set("toJSON", {
+//   virtuals: true,
+// });
 
 exports.Cart = mongoose.model("Cart", cartSchema);
