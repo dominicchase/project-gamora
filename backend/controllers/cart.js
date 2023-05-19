@@ -3,44 +3,61 @@ const mongoose = require("mongoose");
 const { Cart } = require("../models/cart");
 const { Game } = require("../models/game");
 const { User } = require("../models/user");
+const { CartGame } = require("../models/cartGame");
 
 module.exports = {
   addToCart: async (req, res) => {
-    const gameIds = req.body;
+    const { game, quantity } = req.body;
 
     try {
-      const user = await User.findById(req.query.userId);
-    } catch (event) {
-      res.status(500).json({ status: 500, message: "User not found" });
-    }
+      const cart = await Cart.findOne({ userId: req.query.userId });
 
-    try {
-      const cart = await Cart.findOne({ userId: req.query.userId }).populate(
-        "games"
-      );
+      if (!cart) {
+        const cartGame = await CartGame.create({
+          game,
+          quantity,
+        });
 
-      if (cart) {
-        await Cart.findOneAndUpdate(
-          { userId: req.query.userId },
-          { games: [...cart.games, ...req.body] },
-          { new: true }
-        )
-          .populate("games")
-          .then((cart) => res.status(201).send(cart))
-          .catch((error) => res.status(error));
-      } else {
-        await Cart.create({
+        const cart = await Cart.create({
           userId: req.query.userId,
-          games: req.body,
-        })
-          .then((cart) => res.send(cart))
-          .catch((error) => res.status(error));
+          games: [cartGame],
+        });
+
+        res.send(cart);
+      } else {
+        var cartGame = await CartGame.findOne({ game }).populate("game");
+
+        if (!cartGame) {
+          cartGame = await CartGame.create({
+            game,
+            quantity,
+          });
+          const updatedCart = await Cart.findOneAndUpdate(
+            { userId: req.query.userId },
+            { games: [...cart.games, cartGame] },
+            { new: true }
+          ).populate("games");
+          res.send(updatedCart);
+        }
+
+        cartGame = await CartGame.findOneAndUpdate(
+          { game },
+          { quantity: cartGame.quantity + quantity }
+        ).populate("game");
+
+        console.log({ cartGame });
+
+        const updatedCart = await Cart.findOneAndUpdate(
+          { userId: req.query.userId },
+          { games: [...cart.games, cartGame] },
+          { new: true }
+        ).populate("games");
+
+        console.log({ updatedCart });
+
+        res.send(updatedCart);
       }
-    } catch (error) {
-      return res
-        .status(500)
-        .json({ status: 500, message: "Add to cart failed" });
-    }
+    } catch (error) {}
   },
 
   getCart: async (req, res) => {
