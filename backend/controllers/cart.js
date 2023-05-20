@@ -13,10 +13,12 @@ module.exports = {
       const cart = await Cart.findOne({ userId: req.query.userId });
 
       if (!cart) {
-        const cartGame = await CartGame.create({
+        var cartGame = await CartGame.create({
           game,
           quantity,
         });
+
+        cartGame = await cartGame.populate("game");
 
         const cart = await Cart.create({
           userId: req.query.userId,
@@ -32,39 +34,37 @@ module.exports = {
             game,
             quantity,
           });
+
           const updatedCart = await Cart.findOneAndUpdate(
             { userId: req.query.userId },
-            { games: [...cart.games, cartGame] },
+            { $push: { games: cartGame } },
             { new: true }
-          ).populate("games");
-          res.send(updatedCart);
+          ).populate({ path: "games", populate: "game" });
+
+          return res.send(updatedCart);
         }
 
         cartGame = await CartGame.findOneAndUpdate(
           { game },
-          { quantity: cartGame.quantity + quantity }
+          { $inc: { quantity } },
+          { new: true }
         ).populate("game");
 
-        console.log({ cartGame });
+        const updatedCart = await Cart.findOne({
+          userId: req.query.userId,
+        }).populate({ path: "games", populate: "game" });
 
-        const updatedCart = await Cart.findOneAndUpdate(
-          { userId: req.query.userId },
-          { games: [...cart.games, cartGame] },
-          { new: true }
-        ).populate("games");
-
-        console.log({ updatedCart });
-
-        res.send(updatedCart);
+        return res.send(updatedCart);
       }
     } catch (error) {}
   },
 
   getCart: async (req, res) => {
     try {
-      const cart = await Cart.findOne({ userId: req.query.userId }).populate(
-        "games"
-      );
+      const cart = await Cart.findOne({ userId: req.query.userId }).populate({
+        path: "games",
+        populate: "game",
+      });
 
       if (!cart) {
         res.status(200).send([]);
@@ -76,9 +76,12 @@ module.exports = {
     }
   },
 
-  getCarts: async (req, res) => {
+  getCarts: async (_req, res) => {
     try {
-      const carts = await Cart.find().populate("games");
+      const carts = await Cart.find().populate({
+        path: "games",
+        populate: "game",
+      });
 
       if (!carts) {
         res.status(500).json({ status: 500, message: "" });
@@ -88,5 +91,44 @@ module.exports = {
     } catch (event) {
       res.status(500).send({ status: 500, message: "" });
     }
+  },
+
+  removeFromCart: async (req, res) => {
+    // TODO: implement
+    // const { game } = req.body;
+    // try {
+    //   const cartGame = await CartGame.findOne({ game }).populate("game");
+    //   if (!cartGame) {
+    //     return res.status(500).json({ status: 500, message: "" });
+    //   }
+    //   const updatedCart = await Cart.findOneAndUpdate(
+    //     { userId: req.query.userId },
+    //     { $pull: { games: { $elemMatch: cartGame } } },
+    //     { new: true }
+    //   ).populate({ path: "games", populate: "game" });
+    //   res.send(updatedCart);
+    // } catch (error) {}
+  },
+
+  updateCart: async (req, res) => {
+    const { game, quantity } = req.body;
+
+    try {
+      const cartGame = await CartGame.findOneAndUpdate(
+        { game },
+        { quantity },
+        { new: true }
+      ).populate("game");
+
+      if (!cartGame) {
+        return res.status(500).json({ status: 500, message: "" });
+      }
+
+      const updatedCart = await Cart.findOne({
+        userId: req.query.userId,
+      }).populate({ path: "games", populate: "game" });
+
+      res.send(updatedCart);
+    } catch (error) {}
   },
 };

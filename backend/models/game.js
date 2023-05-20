@@ -24,7 +24,7 @@ const gameSchema = new mongoose.Schema({
     required: true,
   },
 
-  quantity: { type: Number, required: true },
+  numInStock: { type: Number, required: true },
 
   // richDescription: {
   //   type: String,

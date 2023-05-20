@@ -9,7 +9,7 @@ const cartSchema = mongoose.Schema({
   games: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Game",
+      ref: "CartGame",
     },
   ],
 });

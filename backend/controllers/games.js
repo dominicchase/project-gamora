@@ -6,12 +6,8 @@ module.exports = {
   createGame: async (req, res) => {
     var game = new Game({
       name: req.body.name,
-      // description: req.body.description,
-      // richDescription: req.body.richDescription,
-      // image: req.body.image,
+      numInStock: req.body.numInStock,
       price: req.body.price,
-      // category: req.body.category,
-      quantity: req.body.quantity,
     });
 
     game = await game.save();
@@ -89,7 +85,7 @@ module.exports = {
         image: req.body.image,
         price: req.body.price,
         category: req.body.category,
-        quantity: req.body.quantity,
+        numInStock: req.body.numInStock,
       },
       { new: true }
     );
