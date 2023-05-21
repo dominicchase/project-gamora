@@ -6,22 +6,24 @@ const cors = require("cors");
 const errorHandler = require("./helpers/errorHandler");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
+const multer = require("multer");
 
 require("dotenv/config");
 // #endregion
 
 const api = process.env.API_URL;
 
+// Create the Multer instance with the configured storage
+const upload = multer({ storage: multer.memoryStorage() });
+
 // middleware
 app.use(authJwt());
-
 app.use(cors());
 app.options("*", cors());
-
 app.use(errorHandler);
 app.use(express.json());
-
 app.use(morgan("tiny"));
+app.use(upload.single("image"));
 
 // routers
 const cartRouter = require("./routers/cart");

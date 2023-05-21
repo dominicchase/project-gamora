@@ -11,12 +11,6 @@ const cartGameSchema = mongoose.Schema({
     default: 0,
     required: true,
   },
-
-  //   price: {
-  //     type: Number,
-  //     default: 0,
-  //     required: true,
-  //   },
 });
 
 exports.CartGame = mongoose.model("CartGame", cartGameSchema);

@@ -2,21 +2,35 @@ const mongoose = require("mongoose");
 
 const { Game } = require("../models/game");
 
+const sharp = require("sharp");
+
 module.exports = {
   createGame: async (req, res) => {
-    var game = new Game({
-      name: req.body.name,
-      numInStock: req.body.numInStock,
-      price: req.body.price,
-    });
+    const { name, numInStock, price } = req.body;
+    const { buffer } = req.file;
 
-    game = await game.save();
+    const resizedImage = await sharp(buffer)
+      .resize({ width: 300 })
+      .toFormat("jpeg")
+      .toBuffer();
 
-    if (!game) {
-      return res.status(500).send("Game can not be created...");
+    try {
+      const game = new Game({
+        name,
+        price,
+        image: {
+          data: Buffer.from(resizedImage, "binary"),
+          contentType: "application/octet-stream",
+        },
+        numInStock,
+      });
+
+      const savedGame = await game.save();
+
+      return res.status(201).send(savedGame);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to create game" });
     }
-
-    return res.send(game);
   },
 
   deleteGame: async (req, res) => {
