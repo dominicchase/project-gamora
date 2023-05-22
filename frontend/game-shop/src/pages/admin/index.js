@@ -1,79 +1,66 @@
-import React, { useState } from "react";
-import { createGame } from "./api/POST.api";
+import React, { useEffect, useState } from "react";
+import "./admin.css";
+import { UploadForm } from "./components/UploadForm";
+import { Modal } from "../../core/Modal";
+import { useDispatch, useSelector } from "react-redux";
+import { getGames } from "../catalog/api/GET.api";
+import { setGames } from "../../reducers/games";
+import { deleteGame } from "./api/POST.api";
 
 export const Admin = () => {
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState(0);
-  const [file, setFile] = useState(undefined);
-  const [image, setImage] = useState(undefined);
-  const [numInStock, setNumInStock] = useState(0);
+  const dispatch = useDispatch();
+  const { games } = useSelector((state) => state.gamesState);
 
-  const handleChange = (event) => {
-    setFile(event.target.files[0]);
+  const [show, toggleShow] = useState(false);
 
-    var reader = new FileReader();
-    reader.readAsDataURL(event.target.files[0]);
-    reader.onload = () => {
-      setImage(reader.result);
-    };
-  };
+  useEffect(() => {
+    getAndSetGames();
+  }, []);
 
-  const handleUpload = (event) => {
-    event.preventDefault();
+  const handleDeleteGame = (id) => deleteGame(id).then(() => getAndSetGames());
 
-    const formData = new FormData();
-
-    formData.append("name", name);
-    formData.append("price", price);
-    formData.append("image", file);
-    formData.append("numInStock", numInStock);
-
-    createGame(formData)
+  const getAndSetGames = () =>
+    getGames()
       .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => {
-        console.error("Error uploading image:", error);
-      });
-  };
+      .then((data) => dispatch(setGames(data)));
+
+  if (!games || !games.length) {
+    return <span>Game over!</span>;
+  }
 
   return (
-    <>
-      <form className="d-flex gap-4">
-        <fieldset className="col-2 d-flex flex-column">
-          <label>Name</label>
-          <input
-            type="text"
-            onChange={(event) => setName(event.target.value)}
-          />
-        </fieldset>
+    <div>
+      <div className="row justify-content-end">
+        <article className="col-sm flex-grow-0 mb-4">
+          <button
+            className="add-game-btn"
+            onClick={() => toggleShow((prevState) => !prevState)}
+          >
+            +
+          </button>
+        </article>
+        {games.map((game) => (
+          <article className="col-sm flex-grow-0 mb-4">
+            <button
+              className="remove-game-btn"
+              onClick={() => handleDeleteGame(game._id)}
+            >
+              X
+            </button>
+            <img
+              className="game-card admin-game-card"
+              src={game.image}
+              alt=""
+              width={300}
+              height={400}
+            />
+          </article>
+        ))}
+      </div>
 
-        <fieldset className="col-1 d-flex flex-column">
-          <label>Price</label>
-          <input
-            type="text"
-            onChange={(event) => setPrice(event.target.value)}
-          />
-        </fieldset>
-
-        <fieldset className="col-2 d-flex flex-column">
-          <input className="mb-3" type="file" onChange={handleChange} />
-          {image && <img width={200} height={300} src={image} alt="" />}
-        </fieldset>
-
-        <fieldset className="col-1 d-flex flex-column">
-          <label>Quantity</label>
-          <input
-            type="text"
-            onChange={(event) => setNumInStock(event.target.value)}
-          />
-        </fieldset>
-
-        <button onClick={handleUpload} disabled={!image}>
-          Upload
-        </button>
-      </form>
-    </>
+      <Modal show={show} toggleShow={toggleShow}>
+        <UploadForm toggleShow={toggleShow} getAndSetGames={getAndSetGames} />
+      </Modal>
+    </div>
   );
 };
