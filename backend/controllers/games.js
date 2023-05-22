@@ -2,26 +2,19 @@ const mongoose = require("mongoose");
 
 const { Game } = require("../models/game");
 
-const sharp = require("sharp");
+const { s3_getImage_v2, s3_uploadImage_v2 } = require("../s3");
 
 module.exports = {
   createGame: async (req, res) => {
     const { name, numInStock, price } = req.body;
-    const { buffer } = req.file;
-
-    const resizedImage = await sharp(buffer)
-      .resize({ width: 300 })
-      .toFormat("jpeg")
-      .toBuffer();
 
     try {
+      const [image] = await s3_uploadImage_v2([req.files[0]]);
+
       const game = new Game({
         name,
         price,
-        image: {
-          data: Buffer.from(resizedImage, "binary"),
-          contentType: "application/octet-stream",
-        },
+        image: image.Location,
         numInStock,
       });
 

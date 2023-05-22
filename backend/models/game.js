@@ -11,16 +11,7 @@ const gameSchema = new mongoose.Schema({
     required: true,
   },
 
-  image: {
-    data: {
-      type: Buffer,
-      required: true,
-    },
-    contentType: {
-      type: String,
-      required: true,
-    },
-  },
+  image: { type: String, required: true },
 
   numInStock: { type: Number, required: true },
 });

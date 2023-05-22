@@ -9,10 +9,7 @@ const {
   getGameById,
   updateGame,
 } = require("../controllers/games");
-
-// ---------------------------------
-// ---------- CUST APIs ------------
-// ---------------------------------
+const upload = require("../middleware/upload");
 
 router.get("/", getGames);
 
@@ -20,11 +17,7 @@ router.get("/game/", getGameById);
 
 router.get("/game/platforms", getAllPlatforms);
 
-// ---------------------------------
-// ---------- ADMIN APIs -----------
-// ---------------------------------
-
-router.post("/", createGame);
+router.post("/", upload.array("image"), createGame);
 
 router.put("/:id", updateGame);
 

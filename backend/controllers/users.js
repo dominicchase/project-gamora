@@ -6,27 +6,23 @@ const { User } = require("../models/user");
 
 module.exports = {
   createUser: async (req, res) => {
-    var user = new User({
-      name: req.body.name,
-      email: req.body.email,
-      passwordHash: bcrypt.hashSync(req.body.password, 10),
-      phone: req.body.phone,
-      isAdmin: req.body.isAdmin,
-      country: req.body.country,
-      address1: req.body.address1,
-      address2: req.body.address2,
-      city: req.body.city,
-      state: req.body.state,
-      zip: req.body.zip,
-    });
+    try {
+      const passwordHash = await bcrypt.hash(re.body.password, 10);
 
-    user = await user.save();
+      const user = new User({
+        name: req.body.name,
+        email: req.body.email,
+        phone: req.body.phone,
+        passwordHash,
+        verified: false,
+      });
 
-    if (!user) {
-      return res.status(500).send("User can not be created...");
+      const savedUser = await user.save();
+
+      res.status(201).send(savedUser);
+    } catch (error) {
+      res.status(500).json({ status: 500, message: "Failed to create user" });
     }
-
-    return res.send(user);
   },
 
   deleteUser: async (req, res) => {

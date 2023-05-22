@@ -1,42 +1,12 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  address1: {
-    type: String,
-    default: "",
-  },
-
-  address2: {
-    type: String,
-    default: "",
-  },
-
-  city: {
-    type: String,
-    default: "",
-  },
-
-  country: {
-    type: String,
-    default: "",
-  },
-
-  email: {
-    type: String,
-    required: true,
-  },
-
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  },
-
   name: {
     type: String,
     required: true,
   },
 
-  passwordHash: {
+  email: {
     type: String,
     required: true,
   },
@@ -46,14 +16,19 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
 
-  state: {
+  passwordHash: {
     type: String,
-    default: "",
+    required: true,
   },
 
-  zip: {
-    type: String,
-    default: "",
+  // verified: {
+  //   type: Boolean,
+  //   default: false,
+  // },
+
+  isAdmin: {
+    type: Boolean,
+    default: false,
   },
 });
 

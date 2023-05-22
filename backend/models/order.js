@@ -1,19 +1,5 @@
 const mongoose = require("mongoose");
 
-// interface Order {
-//   date: Date;
-//   city: string;
-//   country: string;
-//   orderItems: any[];
-//   phone: string;
-//   price: number;
-//   shippingAddress1: string;
-//   shippingAddress2: string;
-//   status: string;
-//   user: any;
-//   zip: string;
-// }
-
 const orderSchema = mongoose.Schema({
   date: {
     type: Date,
