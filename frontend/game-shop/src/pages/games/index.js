@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Buffer } from "buffer";
-
-import { setGames } from "../reducers/games";
+import { setGames } from "../../reducers/games";
 
 export const Games = () => {
   const dispatch = useDispatch();
@@ -14,19 +12,17 @@ export const Games = () => {
     );
   }, []);
 
-  const formatImageData = (imageData) =>
-    imageData &&
-    `data:image/jpeg;base64,${Buffer.from(imageData).toString("base64")}`;
+  if (!games || !games.length) {
+    return <span>Game over!</span>;
+  }
 
-  return !games ? (
-    <span>Loading...</span>
-  ) : (
+  return (
     <>
       {games.map((game) => (
         <article className="mb-5">
           <span>{game.name}</span>
           <span>{game.price}</span>
-          <img src={formatImageData(game.image?.data)} alt="" />
+          <img src={game.image} alt="" width={200} heigh={300} />
         </article>
       ))}
     </>
