@@ -21,6 +21,6 @@ router.post("/", upload.array("image"), createGame);
 
 router.put("/:id", updateGame);
 
-router.delete("/:id", deleteGame);
+router.delete("/delete/", deleteGame);
 
 module.exports = router;

@@ -27,11 +27,11 @@ module.exports = {
   },
 
   deleteGame: async (req, res) => {
-    if (!mongoose.isValidObjectId(req.params.id)) {
+    if (!mongoose.isValidObjectId(req.query.id)) {
       return res.status(400).send("Invalid ID...");
     }
 
-    Game.findByIdAndRemove(req.params.id)
+    Game.findByIdAndRemove(req.query.id)
       .then((game) => {
         if (game) {
           return res
