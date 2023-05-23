@@ -1,18 +1,20 @@
 import React, { useReducer } from "react";
-import { createGame } from "../api/POST.api";
+import { createGame, updateGame } from "../../../api/admin/api";
 
-export const UploadForm = ({ toggleShow, getAndSetGames }) => {
+const initialState = {
+  name: "",
+  price: 0,
+  image: {
+    file: undefined,
+    data: undefined,
+  },
+  numInStock: 0,
+};
+
+export const UploadForm = ({ toggleShow, resetGames, game }) => {
   const [uploadState, uploadDispatch] = useReducer(
     (prevState, newState) => ({ ...prevState, ...newState }),
-    {
-      name: "",
-      price: 0,
-      image: {
-        file: undefined,
-        data: undefined,
-      },
-      numInStock: 0,
-    }
+    game ?? initialState
   );
 
   const { name, price, image, numInStock } = uploadState;
@@ -42,19 +44,28 @@ export const UploadForm = ({ toggleShow, getAndSetGames }) => {
 
     const formData = new FormData();
 
+    console.log(uploadState);
+
     formData.append("name", name);
     formData.append("price", price);
     formData.append("image", image.file);
     formData.append("numInStock", numInStock);
 
-    createGame(formData)
-      .then(() => {
+    if (game) {
+      updateGame(game._id, formData).then(() => {
         toggleShow(false);
-        getAndSetGames();
-      })
-      .catch((error) => {
-        console.error("Error uploading image:", error);
+        resetGames();
       });
+    } else {
+      createGame(formData)
+        .then(() => {
+          toggleShow(false);
+          resetGames();
+        })
+        .catch((error) => {
+          console.error("Error uploading image:", error);
+        });
+    }
   };
 
   return (

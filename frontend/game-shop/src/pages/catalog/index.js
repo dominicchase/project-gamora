@@ -1,18 +1,10 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setGames } from "../../reducers/games";
+import React from "react";
+
+import { useGetGames } from "./useGetGames";
 import "./games.css";
-import { getGames } from "./api/GET.api";
 
 export const Catalog = () => {
-  const dispatch = useDispatch();
-  const { games } = useSelector((state) => state.gamesState);
-
-  useEffect(() => {
-    getGames()
-      .then((res) => res.json())
-      .then((data) => dispatch(setGames(data)));
-  }, []);
+  const { lastGameRef, games } = useGetGames();
 
   if (!games || !games.length) {
     return <span>Game over!</span>;
@@ -24,8 +16,11 @@ export const Catalog = () => {
 
       <div className="col">
         <div className="row justify-content-end">
-          {games.map((game) => (
-            <article className="col-sm flex-grow-0 mb-4">
+          {games.map((game, index) => (
+            <article
+              className="col-sm flex-grow-0 mb-4"
+              ref={index === games.length - 1 ? lastGameRef : null}
+            >
               <img
                 className="game-card"
                 src={game.image}

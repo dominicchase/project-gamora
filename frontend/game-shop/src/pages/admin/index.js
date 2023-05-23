@@ -1,28 +1,42 @@
-import React, { useEffect, useState } from "react";
-import "./admin.css";
+import React, { useState } from "react";
+
 import { UploadForm } from "./components/UploadForm";
+import { ReactComponent as EditIcon } from "../../public/svg/edit.svg";
+import { ReactComponent as RemoveIcon } from "../../public/svg/remove.svg";
+
 import { Modal } from "../../core/Modal";
-import { useDispatch, useSelector } from "react-redux";
-import { getGames } from "../catalog/api/GET.api";
-import { setGames } from "../../reducers/games";
-import { deleteGame } from "./api/POST.api";
+
+import { useGetGames } from "../catalog/useGetGames";
+
+import { deleteGame, getGameImage } from "../../api/admin/api";
+
+import "../../public/css/admin.css";
 
 export const Admin = () => {
-  const dispatch = useDispatch();
-  const { games } = useSelector((state) => state.gamesState);
-
   const [show, toggleShow] = useState(false);
+  const [game, setGame] = useState(undefined);
 
-  useEffect(() => {
-    getAndSetGames();
-  }, []);
+  const { lastGameRef, games, resetGames } = useGetGames();
 
-  const handleDeleteGame = (id) => deleteGame(id).then(() => getAndSetGames());
+  const handleEditGame = (game) =>
+    getGameImage(game._id).then((res) => {
+      setGame({
+        ...game,
+        image: {
+          data: game.image,
+          file: new File([res], game.image.match(/[^\/]+$/)),
+        },
+      });
 
-  const getAndSetGames = () =>
-    getGames()
-      .then((res) => res.json())
-      .then((data) => dispatch(setGames(data)));
+      toggleShow((prevState) => !prevState);
+    });
+
+  const handleNewGame = () => {
+    setGame(undefined);
+    toggleShow((prevState) => !prevState);
+  };
+  const handleDeleteGame = (id) =>
+    deleteGame(id).then(() => console.log("delete"));
 
   if (!games || !games.length) {
     return <span>Game over!</span>;
@@ -30,25 +44,31 @@ export const Admin = () => {
 
   return (
     <div>
-      <div className="row justify-content-end">
+      <div className="row justify-content-center">
         <article className="col-sm flex-grow-0 mb-4">
-          <button
-            className="add-game-btn"
-            onClick={() => toggleShow((prevState) => !prevState)}
-          >
+          <button className="add-game-btn" onClick={handleNewGame}>
             +
           </button>
         </article>
-        {games.map((game) => (
-          <article className="col-sm flex-grow-0 mb-4">
+
+        {games.map((game, index) => (
+          <article
+            className="game-card col-sm flex-grow-0 mb-4"
+            ref={index === games.length - 1 ? lastGameRef : null}
+          >
+            <button className="edit-btn" onClick={() => handleEditGame(game)}>
+              <EditIcon />
+            </button>
+
             <button
-              className="remove-game-btn"
+              className="remove-btn"
               onClick={() => handleDeleteGame(game._id)}
             >
-              X
+              <RemoveIcon />
             </button>
+
             <img
-              className="game-card admin-game-card"
+              className="game-image"
               src={game.image}
               alt=""
               width={300}
@@ -59,7 +79,11 @@ export const Admin = () => {
       </div>
 
       <Modal show={show} toggleShow={toggleShow}>
-        <UploadForm toggleShow={toggleShow} getAndSetGames={getAndSetGames} />
+        <UploadForm
+          toggleShow={toggleShow}
+          // resetGames={resetGames}
+          game={game}
+        />
       </Modal>
     </div>
   );
