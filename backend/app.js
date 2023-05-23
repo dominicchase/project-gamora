@@ -6,14 +6,12 @@ const cors = require("cors");
 const errorHandler = require("./helpers/errorHandler");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
-const bodyParser = require("body-parser");
 
 require("dotenv/config");
 // #endregion
 
 const api = process.env.API_URL;
 
-// Create the
 // middleware
 app.use(authJwt());
 app.use(cors());
@@ -35,8 +33,6 @@ app.use(`${api}/orders`, ordersRouter);
 
 const usersRouter = require("./routers/users");
 app.use(`${api}/users`, usersRouter);
-
-const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
 
 // const orderItems = new Map([
 //   [1, { priceInCents: 10000, name: "Learn React Today" }],

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const { Game } = require("../models/game");
 
-const { s3_getImage_v2, s3_uploadImage_v2 } = require("../s3");
+const { s3_uploadImage_v2 } = require("../s3");
 
 module.exports = {
   createGame: async (req, res) => {
@@ -35,6 +35,7 @@ module.exports = {
       .then((game) => {
         if (game) {
           return res
+            .send()
             .status(200)
             .json({ success: true, message: "Game removed..." });
         } else {
@@ -63,44 +64,63 @@ module.exports = {
     }
   },
 
-  getGames: async (req, res) => {
-    // let filter = {};
+  getGameImage: async (req, res) => {
+    try {
+      const { image: url } = await Game.findById(req.query.id);
 
-    // if (req.query.category) {
-    //   filter = { category: req.query.category };
-    // }
+      const image = await fetch(url);
+
+      const blob = await image.blob();
+
+      const arrayBuffer = await blob.arrayBuffer();
+
+      const buffer = Buffer.from(arrayBuffer);
+
+      res.send(buffer);
+    } catch (error) {}
+  },
+
+  getGames: async (req, res) => {
+    const page = req.query.page ?? 0;
+    const size = req.query.size ?? 12;
 
     try {
-      const games = await Game.find();
-      res.status(200).send(games);
+      const totalGames = (await Game.find()).length;
+      const totalPages = Math.ceil(totalGames / size);
+
+      const games = await Game.find()
+        .sort({ name: 1 })
+        .skip(page * size)
+        .limit(size);
+      res
+        .status(200)
+        .send({ games: games, page: +page, totalPages, totalGames });
     } catch (event) {
       res.status(500).json({ status: 500, message: "" });
     }
   },
 
   updateGame: async (req, res) => {
-    if (!mongoose.isValidObjectId(req.params.id)) {
-      return res.status(400).send("Invalid ID...");
+    const { name, price, numInStock } = req.body;
+
+    try {
+      const [image] = await s3_uploadImage_v2([req.files[0]]);
+
+      const game = await Game.findByIdAndUpdate(
+        req.query.id,
+        {
+          ...(name && { name }),
+          ...(price && { price }),
+          ...(image && { image: image.Location }),
+          ...(numInStock && { numInStock }),
+        },
+        {
+          new: true,
+        }
+      );
+      return res.send(game);
+    } catch (event) {
+      return res.status(500).send("Failed to update game.");
     }
-
-    var game = await Game.findByIdAndUpdate(
-      req.params.id,
-      {
-        name: req.body.name,
-        description: req.body.description,
-        richDescription: req.body.richDescription,
-        image: req.body.image,
-        price: req.body.price,
-        category: req.body.category,
-        numInStock: req.body.numInStock,
-      },
-      { new: true }
-    );
-
-    if (!game) {
-      return res.status(500).send("Game can not be updated...");
-    }
-
-    return res.send(game);
   },
 };
