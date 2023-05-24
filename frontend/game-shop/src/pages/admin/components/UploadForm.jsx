@@ -11,7 +11,7 @@ const initialState = {
   numInStock: 0,
 };
 
-export const UploadForm = ({ toggleShow, resetGames, game }) => {
+export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
   const [uploadState, uploadDispatch] = useReducer(
     (prevState, newState) => ({ ...prevState, ...newState }),
     game ?? initialState
@@ -44,23 +44,21 @@ export const UploadForm = ({ toggleShow, resetGames, game }) => {
 
     const formData = new FormData();
 
-    console.log(uploadState);
-
     formData.append("name", name);
     formData.append("price", price);
     formData.append("image", image.file);
     formData.append("numInStock", numInStock);
 
     if (game) {
-      updateGame(game._id, formData).then(() => {
+      updateGame(game._id, formData).then(async () => {
+        await resetGamesData();
         toggleShow(false);
-        resetGames();
       });
     } else {
       createGame(formData)
-        .then(() => {
+        .then(async () => {
+          await resetGamesData();
           toggleShow(false);
-          resetGames();
         })
         .catch((error) => {
           console.error("Error uploading image:", error);
@@ -77,7 +75,12 @@ export const UploadForm = ({ toggleShow, resetGames, game }) => {
 
       <fieldset className="d-flex flex-column">
         <label className="text-muted mb-2">Price</label>
-        <input type="text" name="price" value={price} onChange={handleChange} />
+        <input
+          type="text"
+          name="price"
+          value={+price}
+          onChange={handleChange}
+        />
       </fieldset>
 
       <fieldset className="d-flex flex-column">

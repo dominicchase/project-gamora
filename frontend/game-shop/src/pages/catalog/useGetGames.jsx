@@ -1,29 +1,26 @@
-import { useCallback, useEffect, useReducer, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { getGames } from "../../api/catalog/api";
-import { setGames } from "../../store/reducers/games";
+import { deleteGame, getGameImage } from "../../api/admin/api";
 
 export const useGetGames = () => {
-  const dispatch = useDispatch();
-  const { games } = useSelector((state) => state.gamesState);
+  const [games, setGames] = useState([]);
+  const [isLoading, toggleIsLoading] = useState(false);
+  const [hasMore, toggleHasMore] = useState(false);
 
-  const [paginationState, paginationDispatch] = useReducer(
-    (prevState, newState) => ({ ...prevState, ...newState }),
-    {
-      loading: false,
-      page: 0,
-      totalPages: 0,
-    }
-  );
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 10,
+    totalPages: undefined,
+  });
 
-  const { loading, page, totalPages } = paginationState;
+  const { page, size, totalPages } = pagination;
 
   const observer = useRef();
 
   const lastGameRef = useCallback(
     (node) => {
-      if (loading) {
+      if (isLoading) {
         return;
       }
 
@@ -32,8 +29,8 @@ export const useGetGames = () => {
       }
 
       observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && page !== totalPages) {
-          paginationDispatch({ ...paginationState, page: page + 1 });
+        if (entries[0].isIntersecting && hasMore) {
+          setPagination({ ...pagination, page: page + 1 });
         }
       });
 
@@ -41,33 +38,55 @@ export const useGetGames = () => {
         observer.current.observe(node);
       }
     },
-    [loading, page]
+    [isLoading, hasMore]
   );
 
+  const handleGetGames = async (action, deletedGamePage) => {
+    const response = await getGames(deletedGamePage ?? page, size);
+    const data = await response.json();
+
+    switch (action) {
+      case "append":
+        setGames([...games, ...data.games]);
+        break;
+
+      case "delete":
+        setGames([...games.slice(0, deletedGamePage * size), ...data.games]);
+        break;
+
+      default:
+        setGames(data.games);
+    }
+
+    toggleHasMore(data.games.length > 0);
+
+    setPagination({ ...pagination, totalPages: data.totalPages });
+  };
+
   useEffect(() => {
-    paginationDispatch({ ...paginationState, loading: true });
+    toggleIsLoading(true);
 
-    getGames(page)
-      .then((res) => res.json())
-      .then((data) => {
-        dispatch(setGames([...games, ...data.games]));
+    handleGetGames("append");
 
-        paginationDispatch({
-          ...paginationState,
-          loading: false,
-          totalPages: data.totalPages,
-        });
-      });
+    toggleIsLoading(false);
   }, [page]);
 
-  // const resetGames = () => { dispatch(setGames([]))};
+  const handleDeleteGame = async (game) => {
+    const deletedGameIndex = games.indexOf(game);
+    const deletedGamePage = Math.floor(deletedGameIndex / size);
+
+    await deleteGame(game._id);
+
+    handleGetGames("delete", deletedGameIndex, deletedGamePage);
+  };
+
+  const resetGamesData = () => handleGetGames();
 
   return {
-    lastGameRef,
-    loading,
     games,
-    paginationDispatch,
-    paginationState,
-    // resetGames,
+    isLoading,
+    lastGameRef,
+    resetGamesData,
+    handleDeleteGame,
   };
 };

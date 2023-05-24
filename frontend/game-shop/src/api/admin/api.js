@@ -13,7 +13,8 @@ export const deleteGame = (id) =>
 
 export const getGame = (id) => getWrapper(`${baseGamesUrl}/game/?id=${id}`);
 
-export const getGames = () => getWrapper(`${baseGamesUrl}`);
+export const getGames = (page, size) =>
+  getWrapper(`${baseGamesUrl}/?page=${page}&size=${size}`);
 
 export const getGameImage = (id) =>
   getWrapper(`${baseGamesUrl}/game/image/?id=${id}`);

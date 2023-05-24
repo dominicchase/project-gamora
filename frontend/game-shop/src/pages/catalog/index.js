@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 import { useGetGames } from "./useGetGames";
 import "./games.css";
+import { GameModal } from "../../core/GameModal";
 
 export const Catalog = () => {
   const { lastGameRef, games } = useGetGames();
@@ -21,13 +23,15 @@ export const Catalog = () => {
               className="col-sm flex-grow-0 mb-4"
               ref={index === games.length - 1 ? lastGameRef : null}
             >
-              <img
-                className="game-card"
-                src={game.image}
-                alt=""
-                width={300}
-                height={400}
-              />
+              <Link to={`/${game._id}`} state={{ game }}>
+                <img
+                  className="game-card"
+                  src={game.image}
+                  alt=""
+                  width={300}
+                  height={400}
+                />
+              </Link>
             </article>
           ))}
         </div>
