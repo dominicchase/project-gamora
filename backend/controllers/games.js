@@ -9,6 +9,10 @@ module.exports = {
     const { name, numInStock, price } = req.body;
 
     try {
+      if (await Game.exists({ name })) {
+        throw new Error("Game already exists");
+      }
+
       const [image] = await s3_uploadImage_v2([req.files[0]]);
 
       const game = new Game({
@@ -27,24 +31,13 @@ module.exports = {
   },
 
   deleteGame: async (req, res) => {
-    if (!mongoose.isValidObjectId(req.query.id)) {
-      return res.status(400).send("Invalid ID...");
-    }
+    try {
+      await Game.findByIdAndRemove(req.query.id);
 
-    Game.findByIdAndRemove(req.query.id)
-      .then((game) => {
-        if (game) {
-          return res
-            .send()
-            .status(200)
-            .json({ success: true, message: "Game removed..." });
-        } else {
-          return res
-            .status(404)
-            .json({ success: false, message: "Game not removed..." });
-        }
-      })
-      .catch((err) => res.status(500).json({ success: false, error: err }));
+      return res.status(200).json({ success: true, message: "Game removed" });
+    } catch (error) {
+      res.status(500).json({ success: false, error });
+    }
   },
 
   getAllPlatforms: async (req, res) => {
