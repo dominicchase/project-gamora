@@ -4,6 +4,7 @@ const token =
 export const host = process.env.REACT_APP_SERVER_URL;
 
 export const baseGamesUrl = `${host}/games`;
+export const baseCartUrl = `${host}/cart`;
 
 export const deleteWrapper = (url) =>
   fetch(url, {

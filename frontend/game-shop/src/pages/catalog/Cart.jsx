@@ -1,0 +1,57 @@
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import "../../public/css/cart.css";
+import { ReactComponent as CloseIcon } from "../../public/svg/x-thin.svg";
+import { removeGameFromCart } from "../../store/reducers/cart";
+
+export const Cart = ({ show, handleCartOverlay }) => {
+  const dispatch = useDispatch();
+  const { cart } = useSelector((state) => state.cartState);
+
+  const total = cart
+    .reduce(
+      (accumulator, cartGame) =>
+        accumulator + cartGame.game.price * cartGame.quantity,
+      0
+    )
+    .toFixed(2);
+
+  const removeFromCart = (cartGame) => {
+    // if guest, use redux/session
+    dispatch(removeGameFromCart(cartGame.game._id));
+
+    // otherwise use mongo db and backend
+  };
+
+  return (
+    show && (
+      <div className="cart-overlay d-flex justify-content-end">
+        <div className="col-3 cart-overlay-content">
+          {cart.map((cartGame) => (
+            <article className="mb-2">
+              <button onClick={() => removeFromCart(cartGame)}>X</button>
+              <img className="w-100" src={cartGame.game.image} alt="" />
+            </article>
+          ))}
+        </div>
+
+        <div className="px-5 py-3 col-4 cart-overlay-content">
+          <div id="header" className="d-flex justify-content-between">
+            <h3 className="span">Cart ({cart.length})</h3>
+
+            <button onClick={handleCartOverlay}>
+              <CloseIcon />
+            </button>
+          </div>
+
+          <span className="span">Total: ${total}</span>
+
+          <div id="footer" className="d-flex flex-column">
+            <button>Cart</button>
+            <button>Checkout</button>
+          </div>
+        </div>
+      </div>
+    )
+  );
+};
