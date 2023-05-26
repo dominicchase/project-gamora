@@ -63,10 +63,12 @@ module.exports = {
 
   getCart: async (req, res) => {
     try {
-      const cart = await Cart.findOne({ userId: req.query.userId }).populate({
-        path: "games",
-        populate: "game",
-      });
+      const cart = await Cart.findOne({ userId: req.query.userId })
+        .populate({
+          path: "games",
+          populate: "game",
+        })
+        .sort({ name: 1 });
 
       if (!cart) {
         res.status(200).send([]);
