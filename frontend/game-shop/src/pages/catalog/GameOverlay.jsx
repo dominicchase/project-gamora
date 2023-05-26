@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
 import "../../public/css/admin.css";
 import { setCart } from "../../store/reducers/cart";
+import "../../public/css/Game.css";
+import { ReactComponent as CloseIcon } from "../../public/svg/x-thin.svg";
 
-export const Game = () => {
+export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
   const dispatch = useDispatch();
-  const { game } = useLocation().state;
-
+  const { game } = useSelector((state) => state.gameState);
   const { cart } = useSelector((state) => state.cartState);
 
   const cartGame = cart
@@ -35,27 +35,30 @@ export const Game = () => {
         dispatch(setCart([...cart, newCartGame]));
       }
     }
-  };
 
-  // const cartGame = cart?.find((cartGame) => cartGame?.game._id === game._id);
+    // toggleShowGame((prevState) => !prevState);
+    toggleShowCart((prevState) => !prevState);
+  };
 
   if (!game) {
     return null;
   }
 
   return (
-    <div className="d-flex gap-4">
+    <div className="game-overlay d-flex p-5 gap-4">
       {/* <button></button> */}
-      <img src={game.image} alt="" />
+      <div className="w-50">
+        <img src={game.image} width={"100%"} alt="" />
+      </div>
 
-      <div>
-        <span className="span">{game.name}</span>
+      <div className="w-50">
+        <span>{game.name}</span>
 
-        <span className="d-block span">${game.price}</span>
+        <span className="d-block">${game.price}</span>
 
-        <span className="d-block span">Quantity</span>
+        <span className="d-block">Quantity</span>
 
-        <p className="span">
+        <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
           eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
           minim veniam, quis nostrud exercitation ullamco laboris nisi ut
@@ -70,6 +73,10 @@ export const Game = () => {
           disabled={cartGame ? cartGame.quantity === game.numInStock : false}
         >
           Add to Cart
+        </button>
+
+        <button onClick={() => toggleShowGame(false)}>
+          <CloseIcon />
         </button>
       </div>
     </div>

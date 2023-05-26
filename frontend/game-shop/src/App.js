@@ -8,38 +8,47 @@ import { Blog } from "./pages/blog";
 
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Game } from "./pages/game";
-import { Cart } from "./pages/catalog/Cart";
+import { Auth } from "./pages/auth";
+import { GameOverlay } from "./pages/catalog/GameOverlay";
+import { CartOverlay } from "./pages/cart/CartOverlay";
+import { Cart } from "./pages/cart";
 
 const App = () => {
-  const [show, toggleShow] = useState(false);
+  const [showGame, toggleShowGame] = useState(false);
+  const [showCart, toggleShowCart] = useState(false);
 
-  const handleCartOverlay = () => {
-    toggleShow((prevState) => !prevState);
-
-    if (!show) {
+  useEffect(() => {
+    if (showGame || showCart) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
-  };
+  }, [showGame, showCart]);
 
   return (
     <>
-      <Navbar handleCartOverlay={handleCartOverlay} />
+      <Navbar toggleShowCart={toggleShowCart} />
 
-      <div
-        className={`${show && "overflow-hidden"} screen-height container py-5`}
-      >
+      <div className="screen-height container py-5">
         <Routes>
+          <Route path="/auth" element={<Auth />} />
           <Route path="/admin" element={<Admin />} />
-          <Route path="/" element={<Catalog />} />
-          <Route path="/:id" element={<Game />} />
+          <Route
+            path="/"
+            element={<Catalog toggleShowGame={toggleShowGame} />}
+          />
           <Route path="/blog" element={<Blog />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </div>
 
-      <Cart show={show} handleCartOverlay={handleCartOverlay} />
+      {showGame && (
+        <GameOverlay
+          toggleShowGame={toggleShowGame}
+          toggleShowCart={toggleShowCart}
+        />
+      )}
+      {showCart && <CartOverlay toggleShowCart={toggleShowCart} />}
     </>
   );
 };

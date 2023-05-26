@@ -1,13 +1,12 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useState } from "react";
 
-import { useDispatch } from "react-redux";
-import { setUser } from "../../reducers/user";
-
-import { login } from "./api/POST.api";
+import { login } from "../../api/auth/POST.api";
+import { getToken, setToken } from "../../utils/token";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const Auth = () => {
-  const dispatch = useDispatch();
-
+  const navigate = useNavigate();
+  const { state } = useLocation();
   const [userState, userDispatch] = useReducer(
     (prevState, newState) => ({ ...prevState, ...newState }),
     {
@@ -15,19 +14,55 @@ export const Auth = () => {
       password: "",
     }
   );
+  const [newUser, toggleNewUser] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleRegister = (event) => {
+    event.preventDefault();
+
+    console.log("registering user");
+  };
+
+  const handleLogin = async (event) => {
     event.preventDefault();
 
     login(userState)
       .then((res) => res.json())
-      .then((data) => dispatch(setUser(data)));
+      .then((data) => {
+        setToken(data.token);
+
+        if (state.checkout) {
+          navigate("/cart");
+        } else {
+          navigate("/");
+        }
+      })
+      .catch((error) => console.log(error));
   };
 
-  return (
-    <form onSubmit={handleSubmit}>
+  return newUser ? (
+    <form>
+      <fieldset className="mb-3">
+        <label className="d-block mb-2">Email</label>
+        <input type="text" />
+      </fieldset>
+      <fieldset className="mb-3">
+        <label className="d-block mb-2">Password</label>
+        <input type="text" />
+      </fieldset>
+      <fieldset className="mb-3">
+        <label className="d-block mb-2">Re-enter password</label>
+        <input type="text" />
+      </fieldset>
+      <button onClick={handleRegister}>Register</button>
+      <span>Already have an account?</span>{" "}
+      <button onClick={() => toggleNewUser((prevState) => !prevState)}>
+        Sign in
+      </button>
+    </form>
+  ) : (
+    <form className="" onSubmit={handleLogin}>
       <fieldset>
-        <label>Email</label>
+        <label className="text-muted">Email</label>
         <input
           type="text"
           onChange={(event) =>
@@ -37,7 +72,7 @@ export const Auth = () => {
       </fieldset>
 
       <fieldset>
-        <label>Password</label>
+        <label className="text-muted">Password</label>
         <input
           type="text"
           onChange={(event) =>
@@ -47,6 +82,12 @@ export const Auth = () => {
       </fieldset>
 
       <button type="submit">Login</button>
+
+      <span className="d-block">New to Game Garaj?</span>
+
+      <button onClick={() => toggleNewUser((prevState) => !prevState)}>
+        Register
+      </button>
     </form>
   );
 };

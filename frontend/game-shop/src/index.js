@@ -9,6 +9,7 @@ import reportWebVitals from "./reportWebVitals";
 import { store } from "./store";
 import { persistStore } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
+import { AuthProvider } from "react-auth-kit";
 
 import "./index.css";
 

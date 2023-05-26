@@ -1,16 +1,22 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
 
 import { useGetGames } from "./useGetGames";
 import "./games.css";
-import { GameModal } from "../../core/GameModal";
+import { setGame } from "../../store/reducers/game";
+import { useDispatch } from "react-redux";
 
-export const Catalog = () => {
+export const Catalog = ({ toggleShowGame }) => {
+  const dispatch = useDispatch();
   const { lastGameRef, games } = useGetGames();
 
   if (!games || !games.length) {
     return <span>Game over!</span>;
   }
+
+  const handleClick = (game) => {
+    dispatch(setGame(game));
+    toggleShowGame((prevState) => !prevState);
+  };
 
   return (
     <div className="row">
@@ -22,16 +28,16 @@ export const Catalog = () => {
             <article
               className="col-sm flex-grow-0 mb-4"
               ref={index === games.length - 1 ? lastGameRef : null}
+              key={`game-${game._id}`}
             >
-              <Link to={`/${game._id}`} state={{ game }}>
-                <img
-                  className="game-card"
-                  src={game.image}
-                  alt=""
-                  width={300}
-                  height={400}
-                />
-              </Link>
+              <img
+                onClick={() => handleClick(game)}
+                className="game-card"
+                src={game.image}
+                alt=""
+                width={300}
+                height={400}
+              />
             </article>
           ))}
         </div>

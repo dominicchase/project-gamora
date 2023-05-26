@@ -1,26 +1,13 @@
-// Initial state
-const initialState = {
-  user: {
-    email: "",
-    token: "",
+import { createSlice } from "@reduxjs/toolkit";
+
+export const userSlice = createSlice({
+  name: "user",
+  initialState: { user: { email: "", token: undefined } },
+  reducers: {
+    setUser(state, action) {
+      state.user = action.payload;
+    },
   },
-};
-
-// Reducer function
-export const userReducer = (state = initialState, action) => {
-  switch (action.type) {
-    case "SET_USER":
-      return {
-        ...state,
-        user: action.payload,
-      };
-
-    default:
-      return state;
-  }
-};
-
-export const setUser = (user) => ({
-  type: "SET_USER",
-  payload: user,
 });
+
+export const { setUser } = userSlice.actions;

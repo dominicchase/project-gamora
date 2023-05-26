@@ -3,6 +3,7 @@ const token =
 
 export const host = process.env.REACT_APP_SERVER_URL;
 
+export const baseUserUrl = `${host}/users`;
 export const baseGamesUrl = `${host}/games`;
 export const baseCartUrl = `${host}/cart`;
 
@@ -27,9 +28,9 @@ export const postWrapper = (url, body) =>
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
-      // "Content-Type": "application/json",
+      "Content-Type": "application/json",
     },
-    body,
+    body: JSON.stringify(body),
   });
 
 export const putWrapper = (url, body) =>

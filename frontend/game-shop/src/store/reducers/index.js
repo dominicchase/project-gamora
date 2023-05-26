@@ -1,12 +1,12 @@
 import { combineReducers } from "redux";
-import { gamesReducer } from "./games";
-import { userReducer } from "./user";
+import { gameSlice } from "./game";
 import { cartSlice } from "./cart";
+import { userSlice } from "./user";
 
 const rootReducer = combineReducers({
-  gamesState: gamesReducer,
+  gameState: gameSlice.reducer,
   cartState: cartSlice.reducer,
-  userState: userReducer,
+  userState: userSlice.reducer,
 });
 
 export default rootReducer;

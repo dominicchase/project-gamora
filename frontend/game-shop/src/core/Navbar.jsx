@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import "../public/css/navbar.css";
 
-export const Navbar = ({ handleCartOverlay }) => {
+export const Navbar = ({ toggleShowCart }) => {
   return (
     <nav className="navbar px-5 d-flex py-4">
       <span className="col-3">GAME GARAGE</span>
@@ -23,7 +23,9 @@ export const Navbar = ({ handleCartOverlay }) => {
       <div className="col d-flex justify-content-end gap-5">
         <span>SEARCH</span>
         <span>USER</span>
-        <button onClick={handleCartOverlay}>CART</button>
+        <button onClick={() => toggleShowCart((prevState) => !prevState)}>
+          CART
+        </button>
       </div>
     </nav>
   );
