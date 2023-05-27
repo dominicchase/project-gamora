@@ -1,73 +1,42 @@
-// #region imports
 const express = require("express");
 const app = express();
-const authJwt = require("./helpers/jwt");
 const cors = require("cors");
 const errorHandler = require("./helpers/errorHandler");
 const mongoose = require("mongoose");
 const morgan = require("morgan");
+const verifyJwt = require("./middleware/verifyJwt");
+const cookieParser = require("cookie-parser");
+const credentials = require("./middleware/credentials");
+const { corsOptions } = require("./config/corsOptions");
 
 require("dotenv/config");
-// #endregion
 
 const api = process.env.API_URL;
 
 // middleware
-app.use(authJwt());
-app.use(cors());
-app.options("*", cors());
+// app.use(cors());
+app.use(credentials);
+app.use(cors(corsOptions));
+// app.options("*", cors());
 app.use(errorHandler);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(morgan("tiny"));
+app.use(cookieParser());
 
 // routers
-const cartRouter = require("./routers/cart");
-app.use(`${api}/cart`, cartRouter);
+const userRoute = require("./routes/user");
+app.use(`${api}/user`, userRoute);
 
-const gamesRouter = require("./routers/games");
-app.use(`${api}/games`, gamesRouter);
+const gamesRoute = require("./routes/games");
+app.use(`${api}/games`, gamesRoute);
 
-const ordersRouter = require("./routers/orders");
-app.use(`${api}/orders`, ordersRouter);
+app.use(verifyJwt);
+const adminRoute = require("./routes/admin");
+app.use(`${api}/admin`, adminRoute);
 
-const usersRouter = require("./routers/users");
-app.use(`${api}/users`, usersRouter);
-
-// const orderItems = new Map([
-//   [1, { priceInCents: 10000, name: "Learn React Today" }],
-//   [2, { priceInCents: 20000, name: "Learn CSS Today" }],
-// ]);
-
-// app.post("/pay", async (req, res) => {
-//   try {
-//     const session = await stripe.checkout.sessions.create({
-//       payment_method_types: ["card"],
-//       mode: "payment",
-//       line_items: req.body.items.map((item) => {
-//         const storeItem = orderItems.get(item.id);
-//         return {
-//           price_data: {
-//             currency: "usd",
-//             product_data: {
-//               name: storeItem.name,
-//             },
-//             unit_amount: storeItem.priceInCents,
-//           },
-//           quantity: item.quantity,
-//         };
-//       }),
-//       success_url: `${process.env.SERVER_URL}/success.html`,
-//       cancel_url: `${process.env.SERVER_URL}/cancel.html`,
-//     });
-
-//     res.json({ url: session.url });
-//   } catch (event) {
-//     res.status(500).json({ error: event.message });
-//   }
-
-//   res.json({ url: "hi" });
-// });
+const cartRoute = require("./routes/cart");
+app.use(`${api}/cart`, cartRoute);
 
 mongoose
   .connect(process.env.CONNECTION_STRING, {

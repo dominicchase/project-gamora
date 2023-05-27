@@ -14,6 +14,26 @@ module.exports = {
 
       let cartGame;
 
+      if (req.body.length > 1) {
+        const cartGames = await CartGame.create(req.body);
+
+        const cart = new Cart({
+          userId: req.query.userId,
+          games: cartGames,
+        });
+
+        const savedCart = await cart.save();
+
+        const populatedCart = await savedCart.populate({
+          path: "games",
+          populate: "game",
+        });
+
+        console.log(populatedCart);
+
+        return res.send(populatedCart);
+      }
+
       if (!cart) {
         cartGame = await CartGame.create({
           game,
@@ -27,7 +47,7 @@ module.exports = {
           games: [cartGame],
         });
 
-        res.send(cart);
+        return res.send(cart);
       } else {
         cartGame = await CartGame.findOne({ game }).populate("game");
 
