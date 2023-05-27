@@ -2,9 +2,9 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../public/css/cart.css";
 import { ReactComponent as CloseIcon } from "../../public/svg/x-thin.svg";
-import { removeGameFromCart } from "../../store/reducers/cart";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../../utils/token";
+import { removeGameFromCart } from "../../store/reducers/CartReducer";
 
 export const CartOverlay = ({ toggleShowCart }) => {
   const navigate = useNavigate();

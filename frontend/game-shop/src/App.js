@@ -12,6 +12,7 @@ import { Auth } from "./pages/auth";
 import { GameOverlay } from "./pages/catalog/GameOverlay";
 import { CartOverlay } from "./pages/cart/CartOverlay";
 import { Cart } from "./pages/cart";
+import { Users } from "./User";
 
 const App = () => {
   const [showGame, toggleShowGame] = useState(false);
@@ -28,6 +29,8 @@ const App = () => {
   return (
     <>
       <Navbar toggleShowCart={toggleShowCart} />
+
+      {/* <Users /> */}
 
       <div className="screen-height container py-5">
         <Routes>

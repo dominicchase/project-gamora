@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { removeGameFromCart } from "../../store/reducers/cart";
+import { removeGameFromCart } from "../../store/reducers/CartReducer";
 
 export const Cart = () => {
   const dispatch = useDispatch();
@@ -20,6 +20,8 @@ export const Cart = () => {
     (accumulator, cartGame) => accumulator + cartGame.quantity,
     0
   );
+
+  const handlePayment = () => {};
 
   return (
     <div>
@@ -46,9 +48,13 @@ export const Cart = () => {
         </div>
       ))}
 
-      <strong className="d-block text-end">
-        Subtotal ({numberOfGames} games): ${subtotal}
-      </strong>
+      <div className="d-flex flex-column align-items-end">
+        <strong className="d-block mb-3">
+          Subtotal ({numberOfGames} games): ${subtotal}
+        </strong>
+
+        <button onClick={handlePayment}>Proceed to Payment</button>
+      </div>
     </div>
   );
 };

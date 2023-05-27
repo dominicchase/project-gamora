@@ -1,9 +1,9 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../public/css/admin.css";
-import { setCart } from "../../store/reducers/cart";
 import "../../public/css/Game.css";
 import { ReactComponent as CloseIcon } from "../../public/svg/x-thin.svg";
+import { setCart } from "../../store/reducers/CartReducer";
 
 export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
   const dispatch = useDispatch();

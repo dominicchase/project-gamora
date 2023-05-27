@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { createGame, updateGame } from "../../../api/admin/api";
+import { createGame, updateGame } from "../../api/admin/api";
 
 const initialState = {
   name: "",

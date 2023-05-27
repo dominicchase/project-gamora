@@ -2,8 +2,8 @@ import React from "react";
 
 import { useGetGames } from "./useGetGames";
 import "./games.css";
-import { setGame } from "../../store/reducers/game";
 import { useDispatch } from "react-redux";
+import { setGame } from "../../store/reducers/GameReducer";
 
 export const Catalog = ({ toggleShowGame }) => {
   const dispatch = useDispatch();

@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 
-import { UploadForm } from "./components/UploadForm";
+import { UploadForm } from "./UploadForm";
 import { ReactComponent as EditIcon } from "../../public/svg/edit.svg";
 import { ReactComponent as RemoveIcon } from "../../public/svg/remove.svg";
 
 import { Modal } from "../../core/Modal";
 
 import { useGetGames } from "../catalog/useGetGames";
-
-import { getGameImage } from "../../api/admin/api";
+import { getGameImage } from "../../api/catalog/api";
 
 import "../../public/css/admin.css";
 
