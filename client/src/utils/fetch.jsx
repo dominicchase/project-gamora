@@ -1,15 +1,15 @@
 export const host = import.meta.env.VITE_SERVER_URL;
 
-export const baseUserUrl = `${host}/users`;
+export const baseUserUrl = `${host}/user`;
 export const baseGamesUrl = `${host}/games`;
 export const baseCartUrl = `${host}/cart`;
 
 export const deleteWrapper = (url) =>
   fetch(url, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+    // headers: {
+    //   Authorization: `Bearer ${token}`,
+    // },
   });
 
 export const getWrapper = (url) =>
@@ -24,7 +24,7 @@ export const postWrapper = (url, body) =>
   fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify(body),
@@ -34,7 +34,7 @@ export const putWrapper = (url, body) =>
   fetch(url, {
     method: "PUT",
     headers: {
-      Authorization: `Bearer ${token}`,
+      // Authorization: `Bearer ${token}`,
       // "Content-Type": "application/json",
     },
     body,

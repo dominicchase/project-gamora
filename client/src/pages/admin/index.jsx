@@ -50,7 +50,7 @@ export const Admin = () => {
             <article
               className="game-card col-sm flex-grow-0 mb-4"
               ref={index === games.length - 1 ? lastGameRef : null}
-              key={`game-card${game._id}`}
+              key={`game-card-${game._id}`}
             >
               <button className="edit-btn" onClick={() => handleEditGame(game)}>
                 <EditIcon />

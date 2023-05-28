@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { createGame, updateGame } from "../../api/admin/api";
+import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 
 const initialState = {
   name: "",
@@ -12,6 +12,8 @@ const initialState = {
 };
 
 export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
+  const axiosPrivate = useAxiosPrivate();
+
   const [uploadState, uploadDispatch] = useReducer(
     (prevState, newState) => ({ ...prevState, ...newState }),
     game ?? initialState
@@ -39,7 +41,7 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
     uploadDispatch({ ...uploadState, [name]: value });
   };
 
-  const handleUpload = (event) => {
+  const handleUpload = async (event) => {
     event.preventDefault();
 
     const formData = new FormData();
@@ -50,19 +52,14 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
     formData.append("numInStock", numInStock);
 
     if (game) {
-      updateGame(game._id, formData).then(async () => {
-        await resetGamesData();
-        toggleShow(false);
-      });
+      await updateGame(game._id, formData);
+      await resetGamesData();
+      toggleShow(false);
     } else {
-      createGame(formData)
-        .then(async () => {
-          await resetGamesData();
-          toggleShow(false);
-        })
-        .catch((error) => {
-          console.error("Error uploading image:", error);
-        });
+      await axiosPrivate.post("/admin/create", formData);
+
+      resetGamesData();
+      toggleShow(false);
     }
   };
 

@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { getGames } from "../../api/catalog/api";
-import { deleteGame } from "../../api/admin/api";
+import { deleteGame } from "../../api/admin";
+import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 
 export const useGetGames = () => {
   const [games, setGames] = useState([]);
   const [isLoading, toggleIsLoading] = useState(false);
   const [hasMore, toggleHasMore] = useState(false);
+  const axiosPrivate = useAxiosPrivate();
 
   const [pagination, setPagination] = useState({
     page: 0,
@@ -43,24 +45,26 @@ export const useGetGames = () => {
 
   const handleGetGames = async (action, deletedGamePage) => {
     const response = await getGames(deletedGamePage ?? page, size);
-    const data = await response.json();
 
     switch (action) {
       case "append":
-        setGames([...games, ...data.games]);
+        setGames([...games, ...response.data.games]);
         break;
 
       case "delete":
-        setGames([...games.slice(0, deletedGamePage * size), ...data.games]);
+        setGames([
+          ...games.slice(0, deletedGamePage * size),
+          ...response.data.games,
+        ]);
         break;
 
       default:
         setGames(data.games);
     }
 
-    toggleHasMore(data.games.length > 0);
+    toggleHasMore(response.data.games.length > 0);
 
-    setPagination({ ...pagination, totalPages: data.totalPages });
+    setPagination({ ...pagination, totalPages: response.data.totalPages });
   };
 
   useEffect(() => {
@@ -75,7 +79,7 @@ export const useGetGames = () => {
     const deletedGameIndex = games.indexOf(game);
     const deletedGamePage = Math.floor(deletedGameIndex / size);
 
-    await deleteGame(game._id);
+    await axiosPrivate.delete(`/admin/delete/?id=${game._id}`);
 
     handleGetGames("delete", deletedGameIndex, deletedGamePage);
   };

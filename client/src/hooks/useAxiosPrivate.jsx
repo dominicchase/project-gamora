@@ -1,0 +1,58 @@
+import { useEffect } from "react";
+import { axiosPrivate } from "../api/axios";
+import useAuth from "./useAuth";
+import { useRefreshToken } from "./useRefreshToken";
+
+export const useAxiosPrivate = () => {
+  const { auth } = useAuth();
+  const refresh = useRefreshToken();
+
+  console.log(auth);
+
+  useEffect(() => {
+    const requestInterceptor = axiosPrivate.interceptors.request.use(
+      (config) => {
+        if (!config.headers["Authorization"]) {
+          config.headers["Authorization"] = `Bearer ${auth?.accessToken}`;
+        }
+
+        return config;
+      },
+      (error) => Promise.reject(error)
+    );
+
+    const responseInterceptor = axiosPrivate.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        const request = error?.config;
+
+        console.log({ request });
+        console.log({ error });
+
+        if (error?.response.status === 401) {
+          console.log("i hate my life");
+        }
+
+        if (error?.response?.status === 403 && !request?.sent) {
+          request.sent = true;
+          const newAccessToken = await refresh();
+
+          console.log({ newAccessToken });
+
+          request.headers["Authorization"] = `Bearer ${newAccessToken}`;
+
+          return axiosPrivate(request);
+        }
+
+        return Promise.reject(error);
+      }
+    );
+
+    return () => {
+      axiosPrivate.interceptors.response.eject(requestInterceptor);
+      axiosPrivate.interceptors.response.eject(responseInterceptor);
+    };
+  }, [auth, refresh]);
+
+  return axiosPrivate;
+};

@@ -1,20 +1,32 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import "../assets/css/navbar.css";
-import { deleteToken, getToken } from "../utils/token";
+import { logout } from "../api/auth/POST.api";
+import useAuth from "../hooks/useAuth";
 
 export const Navbar = ({ toggleShowCart }) => {
-  const handleLogout = () => deleteToken();
+  const navigate = useNavigate();
+  const { auth, setAuth } = useAuth();
+
+  const handleLogout = () => {
+    logout().then(() => {
+      setAuth({});
+      navigate("/");
+    });
+  };
 
   return (
     <nav className="px-5 d-flex py-4">
       <span className="col-3">GAME GARAGE</span>
 
       <ul className="col-6 d-flex justify-content-center gap-5">
-        <li>
-          <Link to="/admin">ADMIN</Link>
-        </li>
+        {auth?.isAdmin && (
+          <li>
+            <Link to="/admin">ADMIN</Link>
+          </li>
+        )}
+
         <li>
           <Link to="/">CATALOG</Link>
         </li>
@@ -25,11 +37,11 @@ export const Navbar = ({ toggleShowCart }) => {
 
       <div className="col d-flex justify-content-end gap-5">
         <span>SEARCH</span>
-        {!!getToken() ? (
-          <button onClick={handleLogout}>Log Out</button>
-        ) : (
-          <Link to="/auth">Log In</Link>
-        )}
+
+        {!!auth.accessToken && <button onClick={handleLogout}>Log Out</button>}
+
+        {!auth.accessToken && <Link to="/auth">Log In</Link>}
+
         <button onClick={() => toggleShowCart((prevState) => !prevState)}>
           CART
         </button>
