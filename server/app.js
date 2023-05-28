@@ -1,9 +1,7 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
-const errorHandler = require("./helpers/errorHandler");
 const mongoose = require("mongoose");
-const morgan = require("morgan");
 const verifyJwt = require("./middleware/verifyJwt");
 const cookieParser = require("cookie-parser");
 const credentials = require("./middleware/credentials");
@@ -12,16 +10,12 @@ const { corsOptions } = require("./config/corsOptions");
 require("dotenv/config");
 
 const api = process.env.API_URL;
+const PORT = process.env.PORT || 8080;
 
-// middleware
-// app.use(cors());
 app.use(credentials);
 app.use(cors(corsOptions));
-// app.options("*", cors());
-app.use(errorHandler);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(morgan("tiny"));
 app.use(cookieParser());
 
 // routers
@@ -44,9 +38,9 @@ mongoose
     useUnifiedTopology: true,
     dbName: "gameshop-db",
   })
-  .then(() => console.log("connected to db"))
+  .then(() => console.log("Connected to db"))
   .catch((err) => console.log(err));
 
-app.listen(3001, () => {
-  console.log("server is running...");
+app.listen(PORT, () => {
+  console.log(`Server is running on ${PORT}`);
 });

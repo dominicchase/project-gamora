@@ -18,7 +18,6 @@ module.exports = {
   },
 
   getGames: async (req, res) => {
-    console.log("here");
     const page = req.query.page ?? 0;
     const size = req.query.size ?? 12;
 

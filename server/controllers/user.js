@@ -11,7 +11,7 @@ const getAccessToken = (email) =>
     },
     process.env.ACCESS_TOKEN_SECRET,
     // TODO: 5 or 15 mins
-    { expiresIn: "30s" }
+    { expiresIn: 60 * 60 * 1000 }
   );
 
 const clearCookie = (res) =>
@@ -46,21 +46,21 @@ module.exports = {
 
       res.cookie("jwt", refreshToken, {
         httpOnly: true,
-        secure: true,
         sameSite: "None",
+        secure: true,
         // 1d in ms
         maxAge: 24 * 60 * 60 * 1000,
       });
 
-      // TODO: on FE, store accessToken in memory (state)
-      return res.status(200).json({ accessToken });
+      return res
+        .status(200)
+        .json({ accessToken, ...(user.isAdmin && { isAdmin: user.isAdmin }) });
     } else {
       return res.status(401).json({ message: "Invalid credentials" });
     }
   },
 
   logout: async (req, res) => {
-    // TODO: on FE, delete access token from memory (state)
     const cookies = req.cookies;
 
     if (!"jwt" in cookies) {
@@ -87,8 +87,8 @@ module.exports = {
   refresh: async (req, res) => {
     const cookies = req.cookies;
 
-    if (!"jwt" in cookies) {
-      return res.sendStatus(401);
+    if (!("jwt" in cookies)) {
+      return res.status(401).json({ message: "Failed to find refresh token" });
     }
 
     const refreshToken = cookies.jwt;
@@ -96,7 +96,7 @@ module.exports = {
     const user = await User.findOne({ refreshToken });
 
     if (!user) {
-      res.sendStatus(403);
+      return res.sendStatus(403);
     }
 
     jwt.verify(
@@ -109,7 +109,10 @@ module.exports = {
 
         const accessToken = getAccessToken(user.email);
 
-        res.status(200).json({ accessToken });
+        res.status(200).json({
+          accessToken,
+          ...(user.isAdmin && { isAdmin: user.isAdmin }),
+        });
       }
     );
   },

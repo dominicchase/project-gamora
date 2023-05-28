@@ -22,8 +22,8 @@ module.exports = {
       const savedGame = await game.save();
 
       return res.status(201).send(savedGame);
-    } catch (error) {
-      res.status(500).json({ error: "Failed to create game" });
+    } catch (err) {
+      res.status(500).json({ error: err });
     }
   },
 

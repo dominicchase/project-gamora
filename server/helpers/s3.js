@@ -1,6 +1,10 @@
 const { S3 } = require("aws-sdk");
 
-const s3_v2 = new S3();
+const s3_v2 = new S3({
+  accessKeyId: process.env.AWS_ACCESS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
 
 module.exports = {
   s3_uploadImage_v2: async (files) => {
@@ -15,7 +19,7 @@ module.exports = {
     );
   },
 
-  s3_getImage_v2: async (fileName, expiresIn) => {
+  s3_getImage_v2: async (fileName) => {
     const imageData = {
       Bucket: process.env.AWS_BUCKET_NAME,
       Key: fileName,

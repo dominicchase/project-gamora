@@ -1,12 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const { login, logout, register, refresh } = require("../controllers/user");
+const {
+  login,
+  logout,
+  register,
+  refresh,
+  getUser,
+} = require("../controllers/user");
+
+// router.get("/find/", getUser);
 
 router.post("/login", login);
 
-router.post("/logout", logout);
+router.get("/logout", logout);
 
-router.post("/refresh", refresh);
+router.get("/refresh", refresh);
 
 router.post("/register", register);
 
