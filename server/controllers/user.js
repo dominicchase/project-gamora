@@ -22,6 +22,8 @@ const clearCookie = (res) =>
   });
 
 module.exports = {
+  // getUser: async (req, res) => {},
+
   login: async (req, res) => {
     const { email, password } = req.body;
 
@@ -52,9 +54,11 @@ module.exports = {
         maxAge: 24 * 60 * 60 * 1000,
       });
 
-      return res
-        .status(200)
-        .json({ accessToken, ...(user.isAdmin && { isAdmin: user.isAdmin }) });
+      return res.status(200).json({
+        id: user._id,
+        accessToken,
+        ...(user.isAdmin && { isAdmin: user.isAdmin }),
+      });
     } else {
       return res.status(401).json({ message: "Invalid credentials" });
     }
@@ -74,10 +78,10 @@ module.exports = {
     if (!user) {
       clearCookie(res);
 
-      res.sendStatus(204);
+      return res.sendStatus(204);
     }
 
-    await user.set("refreshToken", undefined).save();
+    await user.set("refreshToken", "").save();
 
     clearCookie(res);
 
@@ -110,6 +114,7 @@ module.exports = {
         const accessToken = getAccessToken(user.email);
 
         res.status(200).json({
+          id: user._id,
           accessToken,
           ...(user.isAdmin && { isAdmin: user.isAdmin }),
         });

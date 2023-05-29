@@ -5,9 +5,12 @@ const {
   getCart,
   updateCart,
   removeFromCart,
+  createNewCart,
 } = require("../controllers/cart");
 
 router.post("/add-to-cart/", addToCart);
+
+router.post("/create", createNewCart);
 
 router.get("/", getCart);
 

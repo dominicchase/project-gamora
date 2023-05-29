@@ -1,25 +1,48 @@
-const mongoose = require("mongoose");
-
 const { Cart } = require("../models/cart");
-const { Game } = require("../models/game");
-const { User } = require("../models/user");
 const { CartGame } = require("../models/cartGame");
 
 module.exports = {
+  createNewCart: async (req, res) => {
+    const newCartGames = req.body;
+
+    const cartGames = await CartGame.create(newCartGames);
+
+    const cart = new Cart({
+      userId: req.query.id,
+      games: cartGames,
+    });
+
+    const savedCart = await cart.save();
+
+    const populatedCart = await savedCart.populate({
+      path: "games",
+      populate: "game",
+    });
+
+    return res.send(populatedCart);
+  },
+
   addToCart: async (req, res) => {
     const { game, quantity } = req.body;
 
     try {
-      const cart = await Cart.findOne({ userId: req.query.userId });
+      const cart = await Cart.findOne({ userId: req.query.id });
 
       let cartGame;
 
-      if (req.body.length > 1) {
-        const cartGames = await CartGame.create(req.body);
+      if (!cart) {
+        cartGame = new CartGame({
+          game,
+          quantity,
+        });
+
+        const savedCartGame = await cartGame.save();
+
+        const populatedCartGame = await savedCartGame.populate("game");
 
         const cart = new Cart({
-          userId: req.query.userId,
-          games: cartGames,
+          userId: req.query.id,
+          games: [populatedCartGame],
         });
 
         const savedCart = await cart.save();
@@ -29,25 +52,7 @@ module.exports = {
           populate: "game",
         });
 
-        console.log(populatedCart);
-
         return res.send(populatedCart);
-      }
-
-      if (!cart) {
-        cartGame = await CartGame.create({
-          game,
-          quantity,
-        });
-
-        cartGame = await cartGame.populate("game");
-
-        const cart = await Cart.create({
-          userId: req.query.userId,
-          games: [cartGame],
-        });
-
-        return res.send(cart);
       } else {
         cartGame = await CartGame.findOne({ game }).populate("game");
 
@@ -58,7 +63,7 @@ module.exports = {
           });
 
           const updatedCart = await Cart.findOneAndUpdate(
-            { userId: req.query.userId },
+            { userId: req.query.id },
             { $push: { games: cartGame } },
             { new: true }
           ).populate({ path: "games", populate: "game" });
@@ -73,7 +78,7 @@ module.exports = {
         ).populate("game");
 
         const updatedCart = await Cart.findOne({
-          userId: req.query.userId,
+          userId: req.query.id,
         }).populate({ path: "games", populate: "game" });
 
         return res.send(updatedCart);
@@ -83,7 +88,7 @@ module.exports = {
 
   getCart: async (req, res) => {
     try {
-      const cart = await Cart.findOne({ userId: req.query.userId })
+      const cart = await Cart.findOne({ userId: req.query.id })
         .populate({
           path: "games",
           populate: "game",
@@ -91,12 +96,12 @@ module.exports = {
         .sort({ name: 1 });
 
       if (!cart) {
-        res.status(200).send([]);
+        return res.status(200).send([]);
       }
 
-      res.status(200).send(cart);
+      return res.status(200).send(cart);
     } catch (event) {
-      res.status(500).send({ status: 500, message: "" });
+      return res.status(500).send({ status: 500, message: "" });
     }
   },
 
