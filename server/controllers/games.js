@@ -1,3 +1,4 @@
+const { Category } = require("../models/category");
 const { Game } = require("../models/game");
 
 module.exports = {
@@ -25,8 +26,17 @@ module.exports = {
       const totalGames = (await Game.find()).length;
       const totalPages = Math.ceil(totalGames / size);
 
-      const games = await Game.find()
-        .sort({ name: 1 })
+      let category;
+      if (req.query.category) {
+        category = await Category.findOne({
+          categoryEnum: req.query.category,
+        });
+      }
+
+      const games = await Game.find({
+        ...(req.query.category && { category }),
+      })
+        .sort({ name: "ascending" })
         .skip(page * size)
         .limit(size);
       res
