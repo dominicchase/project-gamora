@@ -9,6 +9,38 @@ module.exports = {
     try {
       const cart = await Cart.findOne({ userId: req.query.id });
 
+      // ----------- VALIDATION -------------
+      for (var i = 0; i < games.length; i++) {
+        // check if game DNE in Game model
+        const game = await Game.findById(games[i].game);
+
+        if (!game) {
+          return res
+            .status(500)
+            .json({ error: `Failed to find game: ${games[i].game}` });
+        }
+
+        // check if incomingQuantity would exceed numInStock
+        const cartGame = await CartGame.findOne({ cartId: cart._id, game });
+
+        const currCartGameQuantity = cartGame?.quantity ?? 0;
+        const nextCartGameQuantity = games[i].quantity;
+        const quantity = currCartGameQuantity + nextCartGameQuantity;
+
+        if (quantity > game.numInStock) {
+          return res.status(500).json({
+            error: `Failed to add ${nextCartGameQuantity} ${
+              nextCartGameQuantity > 1 ? "copies" : "copy"
+            } of ${
+              game.name
+            } to cart because quantity = ${currCartGameQuantity} and numInStock = ${
+              game.numInStock
+            }`,
+          });
+        }
+      }
+
+      // ----------- ADD TO CART LOGIC -------------
       if (!cart) {
         const newCart = new Cart({
           userId: req.query.id,
@@ -35,28 +67,17 @@ module.exports = {
 
         return res.send(updatedCart);
       } else {
-        games.forEach(async ({ game, quantity }) => {
-          const { name, numInStock } = await Game.findById(game);
+        const newCartGames = [];
+
+        for (var i = 0; i < games.length; i++) {
+          const { game, quantity } = games[i];
+
           const cartGame = await CartGame.findOne({
-            game,
             cartId: cart._id,
+            game,
           });
 
-          const cartGameQuantity = cartGame?.quantity ?? 0;
-
-          if (quantity + cartGameQuantity > numInStock) {
-            return res.status(500).json({
-              error: `Can not add ${quantity} copy/copies of ${name} to cart. 'numInStock' is ${numInStock}`,
-            });
-          }
-
-          const updatedCartGame = await CartGame.findOneAndUpdate(
-            { game, cartId: cart._id },
-            { $inc: { quantity } },
-            { new: true }
-          );
-
-          if (!updatedCartGame) {
+          if (!cartGame) {
             const newCartGame = new CartGame({
               cartId: cart._id,
               game,
@@ -64,21 +85,31 @@ module.exports = {
             });
 
             const populatedCartGame = await newCartGame.populate("game");
-
+            newCartGames.push(populatedCartGame);
             await populatedCartGame.save();
-
-            const updatedCart = await Cart.findOneAndUpdate(
-              { userId: req.query.id },
-              { $push: { games: populatedCartGame } },
+          } else {
+            const updatedCartGame = await CartGame.findOneAndUpdate(
+              {
+                cartId: cart._id,
+                game,
+              },
+              { $inc: { quantity } },
               { new: true }
-            ).populate({ path: "games", populate: "game" });
+            );
 
-            await updatedCart.save();
+            const populatedCartGame = await updatedCartGame.populate("game");
+            await populatedCartGame.save();
           }
-        });
+        }
 
-        // TODO: resolve bug where this guy is empty
-        const updatedCart = await Cart.findOne({ userId: req.query.id });
+        const updatedCart = await Cart.findOneAndUpdate(
+          { userId: req.query.id },
+          { $push: { games: { $each: newCartGames } } },
+          { new: true }
+        ).populate({
+          path: "games",
+          populate: "game",
+        });
 
         return res.send(updatedCart);
       }
@@ -154,8 +185,6 @@ module.exports = {
       ).populate({ path: "games", populate: "game" });
 
       await CartGame.findOneAndDelete({ game, cartId: cart._id });
-
-      console.log({ updatedCart });
 
       return res.send(updatedCart);
     } catch (error) {}
