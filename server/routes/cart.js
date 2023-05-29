@@ -10,11 +10,11 @@ const {
 
 router.post("/add-to-cart/", addToCart);
 
-router.post("/create", createNewCart);
+// router.post("/create", createNewCart);
 
 router.get("/", getCart);
 
-router.post("/remove-from-cart", removeFromCart);
+router.get("/remove-from-cart/", removeFromCart);
 
 router.post("/update-cart/", updateCart);
 
