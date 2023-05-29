@@ -51,12 +51,14 @@ export const Auth = () => {
     let response;
 
     if (cart.length) {
-      console.log(cart);
-      response = await axiosPrivate.post(`/cart/add-to-cart/?id=${id}`, cart);
+      try {
+        response = await axiosPrivate.post(`/cart/add-to-cart/?id=${id}`, cart);
+      } catch {
+        response = await axiosPrivate.get(`/cart/?id=${id}`);
+      }
     } else {
       response = await axiosPrivate.get(`/cart/?id=${id}`);
     }
-
     dispatch(setCart(response.data.games));
   };
 
