@@ -4,53 +4,60 @@ import "../../assets/css/cart.css";
 import { ReactComponent as CloseIcon } from "../../assets/svg/x-thin.svg";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../../utils/token";
-import { removeGameFromCart } from "../../store/reducers/CartReducer";
+import { removeGameFromCart, setCart } from "../../store/reducers/CartReducer";
+import useAuth from "../../hooks/useAuth";
+import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 
 export const CartOverlay = ({ toggleShowCart }) => {
   const navigate = useNavigate();
 
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.cartState);
+  const { id } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
 
   // const sortedCart = [...cart].sort((curr, next) =>
   //   curr.game.name < next.game.name ? -1 : 1
   // );
+  console.log(cart);
 
-  // const total = cart
-  //   .reduce(
-  //     (accumulator, cartGame) =>
-  //       accumulator + cartGame.game.price * cartGame.quantity,
-  //     0
-  //   )
-  //   .toFixed(2);
+  const total = cart
+    .reduce(
+      (accumulator, cartGame) =>
+        accumulator + cartGame.game.price * cartGame.quantity,
+      0
+    )
+    .toFixed(2);
 
-  // const removeFromCart = (cartGame) => {
-  //   // if guest, use redux/session
-  //   dispatch(removeGameFromCart(cartGame.game._id));
+  const removeFromCart = async (gameId) => {
+    console.log(gameId);
+    if (id) {
+      const response = await axiosPrivate.get(
+        `/cart/remove-from-cart/?id=${id}&game=${gameId}`
+      );
 
-  //   // otherwise use mongo db and backend
-  // };
-
-  // const handleCheckout = () => {
-  //   if (!!getToken()) {
-  //     toggleShowCart(false);
-  //     navigate("/cart");
-  //   } else {
-  //     toggleShowCart(false);
-  //     navigate("/auth", { state: { from: "/cart" } });
-  //   }
-  // };
+      dispatch(setCart(response.data.games));
+    }
+  };
 
   console.log(cart);
 
-  return null;
+  const handleCheckout = () => {
+    // if (!!getToken()) {
+    //   toggleShowCart(false);
+    //   navigate("/cart");
+    // } else {
+    //   toggleShowCart(false);
+    //   navigate("/auth", { state: { from: "/cart" } });
+    // }
+  };
 
   return (
     <div className="cart-overlay d-flex justify-content-end">
       <div className="col-3 cart-overlay-content">
-        {[].map((cartGame) => (
+        {cart.map((cartGame) => (
           <article className="mb-2" key={`cart-game-${cartGame.game._id}`}>
-            <button onClick={() => removeFromCart(cartGame)}>X</button>
+            <button onClick={() => removeFromCart(cartGame.game._id)}>X</button>
             <img className="w-100" src={cartGame.game.image} alt="" />
           </article>
         ))}

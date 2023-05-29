@@ -51,7 +51,8 @@ export const Auth = () => {
     let response;
 
     if (cart.length) {
-      response = await axiosPrivate.post(`/cart/create/?id=${id}`, cart);
+      console.log(cart);
+      response = await axiosPrivate.post(`/cart/add-to-cart/?id=${id}`, cart);
     } else {
       response = await axiosPrivate.get(`/cart/?id=${id}`);
     }

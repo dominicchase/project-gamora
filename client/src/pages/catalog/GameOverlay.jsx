@@ -24,7 +24,7 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
 
   const handleAddToCart = async () => {
     // TODO: modify qty later based on form amt
-    const newCartGame = { game, quantity: 1 };
+    const newCartGame = [{ game, quantity: 1 }];
 
     if (id) {
       const response = await axiosPrivate.post(
