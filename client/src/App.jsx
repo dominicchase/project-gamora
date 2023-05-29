@@ -11,13 +11,7 @@ import "./assets/css/App.css";
 import { Auth } from "./pages/auth";
 import { GameOverlay } from "./pages/catalog/GameOverlay";
 import { CartOverlay } from "./pages/cart/CartOverlay";
-import { Cart } from "./pages/cart";
-import useAuth from "./hooks/useAuth";
-import axios from "./api/axios";
-import { useRefreshToken } from "./hooks/useRefreshToken";
-import { useAxiosPrivate } from "./hooks/useAxiosPrivate";
 import { useIsAuthenticated } from "./hooks/useIsAuthenticated";
-import { useGetCart } from "./hooks/useGetCart";
 
 const App = () => {
   useIsAuthenticated();

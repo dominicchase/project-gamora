@@ -5,7 +5,7 @@ import { deleteGame } from "../../api/admin";
 import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 import axios from "../../api/axios";
 
-export const useGetGames = () => {
+export const useGetGames = (category) => {
   const [games, setGames] = useState([]);
   const [isLoading, toggleIsLoading] = useState(false);
   const [hasMore, toggleHasMore] = useState(false);
@@ -46,7 +46,9 @@ export const useGetGames = () => {
 
   const handleGetGames = async (action, deletedGamePage) => {
     const response = await axios.get(
-      `/games/?page=${deletedGamePage ?? page}&size=${size}`
+      `/games/?page=${deletedGamePage ?? page}&size=${size}${
+        category ? `&category=${category}` : ""
+      }`
     );
 
     switch (action) {
@@ -65,7 +67,7 @@ export const useGetGames = () => {
         setGames(response.data.games);
     }
 
-    toggleHasMore(response.data.games.length > 0);
+    toggleHasMore(response.data.page < totalPages - 1);
 
     setPagination({ ...pagination, totalPages: response.data.totalPages });
   };
@@ -73,10 +75,10 @@ export const useGetGames = () => {
   useEffect(() => {
     toggleIsLoading(true);
 
-    handleGetGames("append");
+    handleGetGames();
 
     toggleIsLoading(false);
-  }, [page]);
+  }, [page, category]);
 
   const handleDeleteGame = async (game) => {
     const deletedGameIndex = games.indexOf(game);
