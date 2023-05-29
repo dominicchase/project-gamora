@@ -12,6 +12,7 @@ export const useRefreshToken = () => {
     setAuth((prevState) => {
       return {
         ...prevState,
+        id: response.data.id,
         accessToken: response.data.accessToken,
         ...(response.data.isAdmin && { isAdmin: response.data.isAdmin }),
       };

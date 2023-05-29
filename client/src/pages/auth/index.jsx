@@ -1,15 +1,18 @@
 import React, { useReducer, useState } from "react";
 
-import { login } from "../../api/auth/POST.api";
-import { getToken, setToken } from "../../utils/token";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { setCart } from "../../store/reducers/CartReducer";
+import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 import axios from "../../api/axios";
 
 export const Auth = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { setAuth } = useAuth();
   const { state } = useLocation();
+  const axiosPrivate = useAxiosPrivate();
   const [userState, userDispatch] = useReducer(
     (prevState, newState) => ({ ...prevState, ...newState }),
     {
@@ -18,6 +21,7 @@ export const Auth = () => {
     }
   );
   const [newUser, toggleNewUser] = useState(false);
+  const { cart } = useSelector((state) => state.cartState);
 
   const handleRegister = (event) => {
     event.preventDefault();
@@ -32,14 +36,27 @@ export const Auth = () => {
       withCredentials: true,
     });
 
-    console.log(response.data.isAdmin);
-
     await setAuth({
+      id: response.data.id,
       accessToken: response.data.accessToken,
       ...(response.data.isAdmin && { isAdmin: response.data.isAdmin }),
     });
 
-    navigate("/");
+    syncCart(response.data.id);
+
+    navigate(state.from);
+  };
+
+  const syncCart = async (id) => {
+    let response;
+
+    if (cart.length) {
+      response = await axiosPrivate.post(`/cart/create/?id=${id}`, cart);
+    } else {
+      response = await axiosPrivate.get(`/cart/?id=${id}`);
+    }
+
+    dispatch(setCart(response.data.games));
   };
 
   return newUser ? (

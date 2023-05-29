@@ -4,6 +4,7 @@ import { useGetGames } from "./useGetGames";
 import "../../assets/css/games.css";
 import { useDispatch } from "react-redux";
 import { setGame } from "../../store/reducers/GameReducer";
+import useAuth from "../../hooks/useAuth";
 
 export const Catalog = ({ toggleShowGame }) => {
   const dispatch = useDispatch();

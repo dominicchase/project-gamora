@@ -16,40 +16,15 @@ import useAuth from "./hooks/useAuth";
 import axios from "./api/axios";
 import { useRefreshToken } from "./hooks/useRefreshToken";
 import { useAxiosPrivate } from "./hooks/useAxiosPrivate";
+import { useIsAuthenticated } from "./hooks/useIsAuthenticated";
+import { useGetCart } from "./hooks/useGetCart";
 
 const App = () => {
+  useIsAuthenticated();
+  // const { user } = useGetUser();
+
   const [showGame, toggleShowGame] = useState(false);
   const [showCart, toggleShowCart] = useState(false);
-
-  const { auth, setAuth } = useAuth();
-  const axiosPrivate = useAxiosPrivate();
-
-  const [isLoading, toggleIsLoading] = useState(true);
-
-  const refresh = useRefreshToken();
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const isLoggedIn = async () => {
-      try {
-        await refresh();
-      } catch (error) {
-        console.log({ error });
-      } finally {
-        toggleIsLoading(false);
-      }
-    };
-
-    !auth?.accessToken ? isLoggedIn() : toggleIsLoading(false);
-
-    return () => (isMounted = false);
-  }, []);
-
-  useEffect(() => {
-    console.log({ isLoading });
-    console.log(auth?.accessToken);
-  }, [isLoading]);
 
   useEffect(() => {
     if (showGame || showCart) {
@@ -72,7 +47,7 @@ const App = () => {
             element={<Catalog toggleShowGame={toggleShowGame} />}
           />
           <Route path="/blog" element={<Blog />} />
-          <Route path="/cart" element={<Cart />} />
+          {/* <Route path="/cart" element={<Cart />} /> */}
         </Routes>
       </div>
 
@@ -82,6 +57,7 @@ const App = () => {
           toggleShowCart={toggleShowCart}
         />
       )}
+
       {showCart && <CartOverlay toggleShowCart={toggleShowCart} />}
     </>
   );

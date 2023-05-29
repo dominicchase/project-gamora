@@ -53,7 +53,7 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
 
     if (game) {
       await updateGame(game._id, formData);
-      await resetGamesData();
+      resetGamesData();
       toggleShow(false);
     } else {
       await axiosPrivate.post("/admin/create", formData);

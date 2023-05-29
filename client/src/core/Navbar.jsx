@@ -1,19 +1,25 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import "../assets/css/navbar.css";
 import { logout } from "../api/auth/POST.api";
 import useAuth from "../hooks/useAuth";
+import { useDispatch } from "react-redux";
+import { setCart } from "../store/reducers/CartReducer";
+import axios from "../api/axios";
 
 export const Navbar = ({ toggleShowCart }) => {
+  const dispatch = useDispatch();
+  const location = useLocation();
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
 
-  const handleLogout = () => {
-    logout().then(() => {
-      setAuth({});
-      navigate("/");
-    });
+  const handleLogout = async () => {
+    await axios.get("/user/logout", { withCredentials: true });
+
+    setAuth({});
+    dispatch(setCart([]));
+    navigate("/");
   };
 
   return (
@@ -40,7 +46,11 @@ export const Navbar = ({ toggleShowCart }) => {
 
         {!!auth.accessToken && <button onClick={handleLogout}>Log Out</button>}
 
-        {!auth.accessToken && <Link to="/auth">Log In</Link>}
+        {!auth.accessToken && (
+          <Link to="/auth" state={{ from: location.pathname }}>
+            Log In
+          </Link>
+        )}
 
         <button onClick={() => toggleShowCart((prevState) => !prevState)}>
           CART

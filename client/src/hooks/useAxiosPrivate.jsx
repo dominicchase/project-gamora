@@ -7,8 +7,6 @@ export const useAxiosPrivate = () => {
   const { auth } = useAuth();
   const refresh = useRefreshToken();
 
-  console.log(auth);
-
   useEffect(() => {
     const requestInterceptor = axiosPrivate.interceptors.request.use(
       (config) => {
@@ -28,10 +26,6 @@ export const useAxiosPrivate = () => {
 
         console.log({ request });
         console.log({ error });
-
-        if (error?.response.status === 401) {
-          console.log("i hate my life");
-        }
 
         if (error?.response?.status === 403 && !request?.sent) {
           request.sent = true;

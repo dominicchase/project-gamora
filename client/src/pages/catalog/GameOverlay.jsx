@@ -4,9 +4,13 @@ import "../../assets/css/admin.css";
 import "../../assets/css/Game.css";
 import { ReactComponent as CloseIcon } from "../../assets/svg/x-thin.svg";
 import { setCart } from "../../store/reducers/CartReducer";
+import useAuth from "../../hooks/useAuth";
+import { axiosPrivate } from "../../api/axios";
 
 export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
   const dispatch = useDispatch();
+
+  const { id } = useAuth();
   const { game } = useSelector((state) => state.gameState);
   const { cart } = useSelector((state) => state.cartState);
 
@@ -18,26 +22,30 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
     ? cart.filter((cartGame) => cartGame.game._id !== game._id)
     : null;
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    // TODO: modify qty later based on form amt
     const newCartGame = { game, quantity: 1 };
 
-    if (!cart) {
-      dispatch(setCart([newCartGame]));
+    if (id) {
+      const response = await axiosPrivate.post(
+        `/cart/add-to-cart/?id=${id}`,
+        newCartGame
+      );
+
+      dispatch(setCart(response.data.games));
     } else {
       if (cartGame) {
+        console.log(cartGame);
         dispatch(
           setCart([
             ...cartComplement,
-            { ...cartGame, quantity: cartGame.quantity + 1 },
+            { ...cartGame, quantity: cartGame.quantity + newCartGame.quantity },
           ])
         );
       } else {
-        dispatch(setCart([...cart, newCartGame]));
+        dispatch(setCart([...cartComplement, newCartGame]));
       }
     }
-
-    // toggleShowGame((prevState) => !prevState);
-    toggleShowCart((prevState) => !prevState);
   };
 
   if (!game) {
@@ -46,7 +54,6 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
 
   return (
     <div className="game-overlay d-flex p-5 gap-4">
-      {/* <button></button> */}
       <div className="w-50">
         <img src={game.image} width={"100%"} alt="" />
       </div>

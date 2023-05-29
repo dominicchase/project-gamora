@@ -5,17 +5,21 @@ export const Cart = () => {
   const dispatch = useDispatch();
   const { cart } = useSelector((state) => state.cartState);
 
-  const sortedCart = [...cart].sort((curr, next) =>
+  if (!cart?.games?.length) {
+    return null;
+  }
+
+  const sortedCart = [...cart.games].sort((curr, next) =>
     curr.game.name < next.game.name ? -1 : 1
   );
 
-  const subtotal = cart.reduce(
+  const subtotal = cart.games.reduce(
     (accumulator, cartGame) =>
       accumulator + cartGame.game.price * cartGame.quantity,
     0
   );
 
-  const numberOfGames = cart.reduce(
+  const numberOfGames = cart.games.reduce(
     (accumulator, cartGame) => accumulator + cartGame.quantity,
     0
   );
@@ -25,7 +29,10 @@ export const Cart = () => {
   return (
     <div>
       {sortedCart.map((cartGame) => (
-        <div className="d-flex px-5 pb-5 mb-5 border-bottom">
+        <div
+          className="d-flex px-5 pb-5 mb-5 border-bottom"
+          key={`cart-game-${cartGame._id}`}
+        >
           <div className="col-3 me-4">
             <img src={cartGame.game.image} width={"100%"} alt="" />
           </div>

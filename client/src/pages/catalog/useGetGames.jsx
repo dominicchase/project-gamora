@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { getGames } from "../../api/catalog/api";
 import { deleteGame } from "../../api/admin";
 import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
+import axios from "../../api/axios";
 
 export const useGetGames = () => {
   const [games, setGames] = useState([]);
@@ -44,7 +45,9 @@ export const useGetGames = () => {
   );
 
   const handleGetGames = async (action, deletedGamePage) => {
-    const response = await getGames(deletedGamePage ?? page, size);
+    const response = await axios.get(
+      `/games/?page=${deletedGamePage ?? page}&size=${size}`
+    );
 
     switch (action) {
       case "append":
@@ -59,7 +62,7 @@ export const useGetGames = () => {
         break;
 
       default:
-        setGames(data.games);
+        setGames(response.data.games);
     }
 
     toggleHasMore(response.data.games.length > 0);
