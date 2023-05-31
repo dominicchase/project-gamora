@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useGetGames } from "./useGetGames";
 import "../../assets/css/games.css";
 import { useDispatch } from "react-redux";
 import { setGame } from "../../store/reducers/GameReducer";
-import useAuth from "../../hooks/useAuth";
-import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
+import axios from "../../api/axios";
 
 export const Catalog = ({ toggleShowGame }) => {
   const dispatch = useDispatch();
   const [category, setCategory] = useState(undefined);
   const { lastGameRef, games } = useGetGames(category);
-  const axiosPrivate = useAxiosPrivate();
 
   const handleClick = (game) => {
     dispatch(setGame(game));
@@ -21,8 +19,7 @@ export const Catalog = ({ toggleShowGame }) => {
   const [categories, setCategories] = useState([]);
 
   const getCategories = async () => {
-    const response = await axiosPrivate.get("/admin/categories");
-    console.log(response.data);
+    const response = await axios.get("/games/categories");
     setCategories(response.data);
   };
 
@@ -30,15 +27,13 @@ export const Catalog = ({ toggleShowGame }) => {
     getCategories();
   }, []);
 
-  console.log(category);
-
   return (
     <div className="row">
       <div className="col-1">
         <span className="d-block mb-3">Filter</span>
 
         {categories.map(({ categoryName, categoryEnum }) => (
-          <div className="d-flex gap-3">
+          <div className="d-flex gap-3" key={`category-${categoryEnum}`}>
             <input
               type="radio"
               value={categoryEnum}
@@ -51,7 +46,7 @@ export const Catalog = ({ toggleShowGame }) => {
       </div>
 
       <div className="col">
-        {!!games.length ? (
+        {games.length ? (
           <div className="row justify-content-end">
             {games.map((game, index) => (
               <article

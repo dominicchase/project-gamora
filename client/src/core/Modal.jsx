@@ -1,5 +1,3 @@
-import React from "react";
-
 export const Modal = ({ children, show, toggleShow }) =>
   show && (
     <div className="custom-modal">

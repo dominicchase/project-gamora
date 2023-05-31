@@ -24,14 +24,9 @@ export const useAxiosPrivate = () => {
       async (error) => {
         const request = error?.config;
 
-        console.log({ request });
-        console.log({ error });
-
         if (error?.response?.status === 403 && !request?.sent) {
           request.sent = true;
           const newAccessToken = await refresh();
-
-          console.log({ newAccessToken });
 
           request.headers["Authorization"] = `Bearer ${newAccessToken}`;
 

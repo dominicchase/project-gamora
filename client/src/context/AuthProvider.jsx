@@ -1,5 +1,4 @@
-import { createContext, useEffect, useState } from "react";
-import { useRefreshToken } from "../hooks/useRefreshToken";
+import { createContext, useState } from "react";
 
 const AuthContext = createContext({});
 

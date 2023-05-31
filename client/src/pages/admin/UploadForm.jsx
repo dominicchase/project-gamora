@@ -1,9 +1,9 @@
-import React, { useEffect, useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 
 const initialState = {
   name: "",
-  category: "",
+  category: "INIT",
   price: 0,
   image: {
     file: undefined,
@@ -17,7 +17,7 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
 
   const [uploadState, uploadDispatch] = useReducer(
     (prevState, newState) => ({ ...prevState, ...newState }),
-    game ?? initialState
+    { ...game, category: game.category.categoryEnum } ?? initialState
   );
 
   const { name, category, price, image, numInStock } = uploadState;
@@ -54,7 +54,7 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
     formData.append("numInStock", numInStock);
 
     if (game) {
-      await updateGame(game._id, formData);
+      // await updateGame(game._id, formData);
       resetGamesData();
       toggleShow(false);
     } else {
@@ -71,7 +71,6 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
 
   const getCategories = async () => {
     const response = await axiosPrivate.get("/admin/categories");
-    console.log(response.data);
     setCategories(response.data);
   };
 
@@ -80,7 +79,7 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
   }, []);
 
   const handleNewCategory = async () => {
-    const response = await axiosPrivate.post("/admin/create/category", {
+    await axiosPrivate.post("/admin/create/category", {
       categoryName,
       categoryEnum,
     });
@@ -104,11 +103,17 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
       <fieldset className="d-flex flex-column">
         <label className="text-muted mb-2">Category</label>
 
-        <select defaultValue="" name="category" onChange={handleChange}>
-          <option value="">Category</option>
+        <select name="category" onChange={handleChange}>
+          <option value="INIT">Category</option>
 
           {categories.map((option) => (
-            <option value={option.categoryEnum}>{option.categoryName}</option>
+            <option
+              value={option.categoryEnum}
+              selected={uploadState.category === option.categoryEnum}
+              key={`category-${option.categoryEnum}`}
+            >
+              {option.categoryName}
+            </option>
           ))}
         </select>
       </fieldset>

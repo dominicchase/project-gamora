@@ -1,8 +1,6 @@
-import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import "../assets/css/navbar.css";
-import { logout } from "../api/auth/POST.api";
 import useAuth from "../hooks/useAuth";
 import { useDispatch } from "react-redux";
 import { setCart } from "../store/reducers/CartReducer";

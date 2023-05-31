@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { getGames } from "../../api/catalog/api";
-import { deleteGame } from "../../api/admin";
 import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 import axios from "../../api/axios";
 
@@ -67,7 +65,7 @@ export const useGetGames = (category) => {
         setGames(response.data.games);
     }
 
-    toggleHasMore(response.data.page < totalPages - 1);
+    toggleHasMore(response.data.page < response.data.totalPages - 1);
 
     setPagination({ ...pagination, totalPages: response.data.totalPages });
   };

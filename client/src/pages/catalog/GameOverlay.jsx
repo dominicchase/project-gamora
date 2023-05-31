@@ -1,4 +1,3 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../../assets/css/admin.css";
 import "../../assets/css/Game.css";
@@ -9,17 +8,17 @@ import { axiosPrivate } from "../../api/axios";
 
 export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
   const dispatch = useDispatch();
-
   const { id } = useAuth();
+
   const { game } = useSelector((state) => state.gameState);
   const { cart } = useSelector((state) => state.cartState);
 
-  const cartGame = cart
-    ? cart.find((cartGame) => cartGame.game._id === game._id)
+  const cartGame = cart.length
+    ? cart.find((cartGame) => cartGame._id === game._id)
     : null;
 
   const cartComplement = cart
-    ? cart.filter((cartGame) => cartGame.game._id !== game._id)
+    ? cart.filter((cartGame) => cartGame._id !== game._id)
     : null;
 
   const handleAddToCart = async () => {
@@ -34,7 +33,6 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
       dispatch(setCart(response.data.games));
     } else {
       if (cartGame) {
-        console.log(cartGame);
         dispatch(
           setCart([
             ...cartComplement,
@@ -46,10 +44,6 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
       }
     }
   };
-
-  if (!game) {
-    return null;
-  }
 
   return (
     <div className="game-overlay d-flex p-5 gap-4">

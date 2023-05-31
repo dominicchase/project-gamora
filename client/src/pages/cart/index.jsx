@@ -1,34 +1,39 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import useAuth from "../../hooks/useAuth";
+import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
+import { setCart } from "../../store/reducers/CartReducer";
 
 export const Cart = () => {
   const dispatch = useDispatch();
+  const { id } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
+
   const { cart } = useSelector((state) => state.cartState);
 
-  if (!cart?.games?.length) {
-    return null;
-  }
-
-  const sortedCart = [...cart.games].sort((curr, next) =>
-    curr.game.name < next.game.name ? -1 : 1
-  );
-
-  const subtotal = cart.games.reduce(
+  const subtotal = cart.reduce(
     (accumulator, cartGame) =>
       accumulator + cartGame.game.price * cartGame.quantity,
     0
   );
 
-  const numberOfGames = cart.games.reduce(
+  const numberOfGames = cart.reduce(
     (accumulator, cartGame) => accumulator + cartGame.quantity,
     0
   );
 
-  const handlePayment = () => {};
+  const removeFromCart = async (cartGameId) => {
+    if (id) {
+      const response = await axiosPrivate.get(
+        `/cart/remove-from-cart/?id=${cartGameId}`
+      );
+
+      dispatch(setCart(response.data.games));
+    }
+  };
 
   return (
     <div>
-      {sortedCart.map((cartGame) => (
+      {cart.map((cartGame) => (
         <div
           className="d-flex px-5 pb-5 mb-5 border-bottom"
           key={`cart-game-${cartGame._id}`}
@@ -46,7 +51,7 @@ export const Cart = () => {
 
             <button
               className="px-4"
-              onClick={() => dispatch(removeGameFromCart(cartGame.game._id))}
+              onClick={() => dispatch(removeFromCart(cartGame._id))}
             >
               X
             </button>
@@ -59,7 +64,7 @@ export const Cart = () => {
           Subtotal ({numberOfGames} games): ${subtotal}
         </strong>
 
-        <button onClick={handlePayment}>Proceed to Payment</button>
+        {/* <button onClick={handlePayment}>Proceed to Payment</button> */}
       </div>
     </div>
   );

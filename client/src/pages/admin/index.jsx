@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { UploadForm } from "./UploadForm";
 import { ReactComponent as EditIcon } from "../../assets/svg/edit.svg";
@@ -24,7 +24,7 @@ export const Admin = () => {
         ...game,
         image: {
           data: game.image,
-          file: new File([res], game.image.match(/[^\/]+$/)),
+          file: new File([res], game.image.match(/[^/]+$/)),
         },
       });
 
