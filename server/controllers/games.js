@@ -38,12 +38,38 @@ module.exports = {
       })
         .sort({ name: "ascending" })
         .skip(page * size)
-        .limit(size);
+        .limit(size)
+        .populate("category");
       res
         .status(200)
         .send({ games: games, page: +page, totalPages, totalGames });
     } catch (event) {
       res.status(500).json({ status: 500, message: "" });
     }
+  },
+
+  getCategories: async (req, res) => {
+    const categories = await Category.find().sort({
+      categoryName: "ascending",
+    });
+
+    if (!categories) {
+      return res.status(500).json({ error: "Failed to find categories" });
+    }
+
+    const filteredCategories = [];
+    for (var i = 0; i < categories.length; i++) {
+      const category = categories[i];
+
+      const gameExistsWithCategory = await Game.findOne({
+        category,
+      });
+
+      if (gameExistsWithCategory) {
+        filteredCategories.push(category);
+      }
+    }
+
+    return res.send(filteredCategories);
   },
 };

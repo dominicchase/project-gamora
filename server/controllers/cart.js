@@ -9,36 +9,36 @@ module.exports = {
     try {
       const cart = await Cart.findOne({ userId: req.query.id });
 
-      // ----------- VALIDATION -------------
-      for (var i = 0; i < games.length; i++) {
-        // check if game DNE in Game model
-        const game = await Game.findById(games[i].game);
+      //  // ----------- VALIDATION -------------
+      //  for (var i = 0; i < games.length; i++) {
+      //   // check if game DNE in Game model
+      //   const game = await Game.findById(games[i].game);
 
-        if (!game) {
-          return res
-            .status(500)
-            .json({ error: `Failed to find game: ${games[i].game}` });
-        }
+      //   if (!game) {
+      //     return res
+      //       .status(500)
+      //       .json({ error: `Failed to find game: ${games[i].game}` });
+      //   }
 
-        // check if incomingQuantity would exceed numInStock
-        const cartGame = await CartGame.findOne({ cartId: cart._id, game });
+      //   // check if incomingQuantity would exceed numInStock
+      //   const cartGame = await CartGame.findOne({ cartId: cart._id, game });
 
-        const currCartGameQuantity = cartGame?.quantity ?? 0;
-        const nextCartGameQuantity = games[i].quantity;
-        const quantity = currCartGameQuantity + nextCartGameQuantity;
+      //   const currCartGameQuantity = cartGame?.quantity ?? 0;
+      //   const nextCartGameQuantity = games[i].quantity;
+      //   const quantity = currCartGameQuantity + nextCartGameQuantity;
 
-        if (quantity > game.numInStock) {
-          return res.status(500).json({
-            error: `Failed to add ${nextCartGameQuantity} ${
-              nextCartGameQuantity > 1 ? "copies" : "copy"
-            } of ${
-              game.name
-            } to cart because quantity = ${currCartGameQuantity} and numInStock = ${
-              game.numInStock
-            }`,
-          });
-        }
-      }
+      //   if (quantity > game.numInStock) {
+      //     return res.status(500).json({
+      //       error: `Failed to add ${nextCartGameQuantity} ${
+      //         nextCartGameQuantity > 1 ? "copies" : "copy"
+      //       } of ${
+      //         game.name
+      //       } to cart because quantity = ${currCartGameQuantity} and numInStock = ${
+      //         game.numInStock
+      //       }`,
+      //     });
+      //   }
+      // }
 
       // ----------- ADD TO CART LOGIC -------------
       if (!cart) {
@@ -155,22 +155,16 @@ module.exports = {
   },
 
   removeFromCart: async (req, res) => {
-    const game = req.query.game;
+    const cartGame = await CartGame.findById(req.query.id).populate("game");
 
-    const cart = await Cart.findOne({ userId: req.query.id });
-
-    if (!cart) {
+    if (!cartGame) {
       return res.status(500).json({
-        status: 500,
-        error: `Cart does not exist for user ${req.query.id}`,
+        error: `Cart Game ${req.query.id} does not exist`,
       });
     }
 
     try {
-      const cartGame = await CartGame.findOne({
-        game,
-        cartId: cart._id,
-      }).populate("game");
+      const cartGame = await CartGame.findById(req.query.id).populate("game");
 
       if (!cartGame) {
         return res
@@ -178,13 +172,13 @@ module.exports = {
           .json({ status: 500, error: "Game not found in cart" });
       }
 
-      const updatedCart = await Cart.findOneAndUpdate(
-        { userId: req.query.id },
+      const updatedCart = await Cart.findByIdAndUpdate(
+        cartGame.cartId,
         { $pull: { games: cartGame._id } },
         { new: true }
       ).populate({ path: "games", populate: "game" });
 
-      await CartGame.findOneAndDelete({ game, cartId: cart._id });
+      await CartGame.findByIdAndDelete(cartGame._id);
 
       return res.send(updatedCart);
     } catch (error) {}
