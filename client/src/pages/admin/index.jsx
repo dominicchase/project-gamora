@@ -10,6 +10,7 @@ import axios from "../../api/axios";
 import { useGetGames } from "../catalog/useGetGames";
 
 import "../../assets/css/admin.css";
+import { GameCard } from "../../core/GameCard";
 
 export const Admin = () => {
   const [show, toggleShow] = useState(false);
@@ -48,34 +49,29 @@ export const Admin = () => {
           </button>
         </article>
 
-        {!!games.length &&
-          games.map((game, index) => (
-            <article
-              className="game-card col-sm flex-grow-0 mb-4"
-              ref={index === games.length - 1 ? lastGameRef : null}
-              key={`game-card-${game._id}`}
+        {games.map((game) => (
+          <>
+            <button
+              // className="edit-btn"
+              onClick={() => handleEditGame(game)}
             >
-              <button className="edit-btn" onClick={() => handleEditGame(game)}>
-                <EditIcon />
-              </button>
+              <EditIcon />
+            </button>
 
-              <button
-                className="remove-btn"
-                onClick={() => handleDeleteGame(game)}
-              >
-                <RemoveIcon />
-              </button>
+            <button
+              // className="remove-btn"
+              onClick={() => handleDeleteGame(game)}
+            >
+              <RemoveIcon />
+            </button>
 
-              <img
-                className="game-image"
-                src={game.image}
-                alt=""
-                width={300}
-                height={400}
-                key={`game-img-${game._id}`}
-              />
-            </article>
-          ))}
+            <GameCard
+              game={game}
+              lastGameRef={lastGameRef}
+              key={`game-${game._id}`}
+            />
+          </>
+        ))}
       </div>
 
       <Modal show={show} toggleShow={toggleShow}>
