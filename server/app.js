@@ -32,10 +32,14 @@ app.use(`${api}/admin`, adminRoute);
 const cartRoute = require("./routes/cart");
 app.use(`${api}/cart`, cartRoute);
 
+const paymentRoute = require("./routes/payment");
+app.use(`${api}/pay`, paymentRoute);
+
 mongoose
   .connect(process.env.CONNECTION_STRING, {
+    useUnifiedTopology: true, // For Mongoose 5 only. Remove for Mongoose 6+
+    serverSelectionTimeoutMS: 1000, // Defaults to 30000 (30 seconds)
     useNewUrlParser: true,
-    useUnifiedTopology: true,
     dbName: "gameshop-db",
   })
   .then(() => console.log("Connected to db"))

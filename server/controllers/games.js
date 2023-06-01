@@ -39,9 +39,10 @@ module.exports = {
         );
       }
 
-      console.log(req.query.search);
-
-      const regex = req.query.search;
+      let regex;
+      if (req.query.search) {
+        regex = req.query.search;
+      }
 
       const games = await Game.find({
         ...(categories && { category: { $in: categories } }),
@@ -52,6 +53,7 @@ module.exports = {
         .sort({ name: "ascending" })
         .skip(page * size)
         .limit(size)
+        .lean()
         .populate("category");
       res
         .status(200)

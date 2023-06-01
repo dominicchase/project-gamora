@@ -46,16 +46,19 @@ module.exports = {
   },
 
   updateGame: async (req, res) => {
-    const { name, price, numInStock } = req.body;
+    const { name, category, price, numInStock } = req.body;
 
     try {
       const [image] = await s3_uploadImage_v2([req.files[0]]);
+
+      const categoryObj = await Category.findOne({ categoryEnum: category });
 
       const game = await Game.findByIdAndUpdate(
         req.query.id,
         {
           ...(name && { name }),
           ...(price && { price }),
+          ...(categoryObj && { category: categoryObj }),
           ...(image && { image: image.Location }),
           ...(numInStock && { numInStock }),
         },
