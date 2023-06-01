@@ -3,11 +3,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 import axios from "../../api/axios";
 
-export const useGetGames = (category) => {
+export const useGetGames = (categories, search) => {
   const [games, setGames] = useState([]);
   const [isLoading, toggleIsLoading] = useState(false);
   const [hasMore, toggleHasMore] = useState(false);
   const axiosPrivate = useAxiosPrivate();
+
+  console.log(search);
 
   const [pagination, setPagination] = useState({
     page: 0,
@@ -45,8 +47,8 @@ export const useGetGames = (category) => {
   const handleGetGames = async (action, deletedGamePage) => {
     const response = await axios.get(
       `/games/?page=${deletedGamePage ?? page}&size=${size}${
-        category ? `&category=${category}` : ""
-      }`
+        categories?.length ? `&categories=${categories?.join(",")}` : ""
+      }${search?.length ? `&search=${search}` : ""}`
     );
 
     switch (action) {
@@ -76,7 +78,7 @@ export const useGetGames = (category) => {
     handleGetGames();
 
     toggleIsLoading(false);
-  }, [page, category]);
+  }, [page, categories, search]);
 
   const handleDeleteGame = async (game) => {
     const deletedGameIndex = games.indexOf(game);
@@ -84,7 +86,7 @@ export const useGetGames = (category) => {
 
     await axiosPrivate.delete(`/admin/delete/?id=${game._id}`);
 
-    handleGetGames("delete", deletedGameIndex, deletedGamePage);
+    handleGetGames("delete", deletedGamePage);
   };
 
   const resetGamesData = () => handleGetGames();

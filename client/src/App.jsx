@@ -4,7 +4,7 @@ import { Route, Routes } from "react-router-dom";
 import { Navbar } from "./core/Navbar";
 import { Admin } from "./pages/admin";
 import { Catalog } from "./pages/catalog";
-import { Blog } from "./pages/blog";
+// import { Blog } from "./pages/blog";
 import { Cart } from "./pages/cart";
 import { Auth } from "./pages/auth";
 import { GameOverlay } from "./pages/catalog/GameOverlay";
@@ -13,6 +13,7 @@ import { useIsAuthenticated } from "./hooks/useIsAuthenticated";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/css/App.css";
+import { Search } from "./pages/search";
 
 const App = () => {
   useIsAuthenticated();
@@ -40,7 +41,11 @@ const App = () => {
             path="/"
             element={<Catalog toggleShowGame={toggleShowGame} />}
           />
-          <Route path="/blog" element={<Blog />} />
+          {/* <Route path="/blog" element={<Blog />} /> */}
+          <Route
+            path="/search"
+            element={<Search toggleShowGame={toggleShowGame} />}
+          />
           <Route path="/cart" element={<Cart />} />
         </Routes>
       </div>

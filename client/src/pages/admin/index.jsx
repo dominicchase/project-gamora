@@ -6,8 +6,8 @@ import { ReactComponent as RemoveIcon } from "../../assets/svg/remove.svg";
 
 import { Modal } from "../../core/Modal";
 
+import axios from "../../api/axios";
 import { useGetGames } from "../catalog/useGetGames";
-import { getGameImage } from "../../api/catalog/api";
 
 import "../../assets/css/admin.css";
 
@@ -18,18 +18,21 @@ export const Admin = () => {
   const { lastGameRef, games, resetGamesData, handleDeleteGame } =
     useGetGames();
 
-  const handleEditGame = (game) =>
-    getGameImage(game._id).then((res) => {
-      setGame({
-        ...game,
-        image: {
-          data: game.image,
-          file: new File([res], game.image.match(/[^/]+$/)),
-        },
-      });
-
-      toggleShow((prevState) => !prevState);
+  const handleEditGame = async (game) => {
+    const response = await axios.get(`/games/image/?id=${game._id}`, {
+      withCredentials: true,
     });
+
+    setGame({
+      ...game,
+      image: {
+        data: game.image,
+        file: new File([response], game.image.match(/[^/]+$/)),
+      },
+    });
+
+    toggleShow((prevState) => !prevState);
+  };
 
   const handleNewGame = () => {
     setGame(undefined);

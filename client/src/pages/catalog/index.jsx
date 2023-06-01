@@ -8,8 +8,9 @@ import axios from "../../api/axios";
 
 export const Catalog = ({ toggleShowGame }) => {
   const dispatch = useDispatch();
-  const [category, setCategory] = useState(undefined);
-  const { lastGameRef, games } = useGetGames(category);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  const { lastGameRef, games } = useGetGames(selectedCategories);
 
   const handleClick = (game) => {
     dispatch(setGame(game));
@@ -27,6 +28,18 @@ export const Catalog = ({ toggleShowGame }) => {
     getCategories();
   }, []);
 
+  const handleCheckbox = (event) => {
+    const { value, checked } = event.target;
+
+    if (checked) {
+      setSelectedCategories((prevState) => [...prevState, value]);
+    } else {
+      setSelectedCategories(
+        selectedCategories.filter((category) => category !== value)
+      );
+    }
+  };
+
   return (
     <div className="row">
       <div className="col-1">
@@ -35,17 +48,17 @@ export const Catalog = ({ toggleShowGame }) => {
         {categories.map(({ categoryName, categoryEnum }) => (
           <div className="d-flex gap-3" key={`category-${categoryEnum}`}>
             <input
-              type="radio"
+              type="checkbox"
               value={categoryEnum}
-              checked={category === categoryEnum}
-              onChange={(event) => setCategory(event.target.value)}
+              checked={selectedCategories.includes(categoryEnum)}
+              onChange={handleCheckbox}
             />
             <label>{categoryName}</label>
           </div>
         ))}
       </div>
 
-      <div className="col">
+      <div className="col-10">
         {games.length ? (
           <div className="row justify-content-end">
             {games.map((game, index) => (

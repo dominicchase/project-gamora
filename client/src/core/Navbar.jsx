@@ -27,20 +27,20 @@ export const Navbar = ({ toggleShowCart }) => {
       <ul className="col-6 d-flex justify-content-center gap-5">
         {auth?.isAdmin && (
           <li>
-            <Link to="/admin">ADMIN</Link>
+            <Link to="/admin">Admin</Link>
           </li>
         )}
 
         <li>
-          <Link to="/">CATALOG</Link>
+          <Link to="/">Catalog</Link>
         </li>
-        <li>
+        {/* <li>
           <Link to="/blog">BLOG</Link>
-        </li>
+        </li> */}
       </ul>
 
       <div className="col d-flex justify-content-end gap-5">
-        <span>SEARCH</span>
+        <Link to="/search">Search</Link>
 
         {!!auth.accessToken && <button onClick={handleLogout}>Log Out</button>}
 

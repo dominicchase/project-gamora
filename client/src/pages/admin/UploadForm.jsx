@@ -17,7 +17,7 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
 
   const [uploadState, uploadDispatch] = useReducer(
     (prevState, newState) => ({ ...prevState, ...newState }),
-    { ...game, category: game.category.categoryEnum } ?? initialState
+    { ...game, category: game?.category?.categoryEnum } ?? initialState
   );
 
   const { name, category, price, image, numInStock } = uploadState;
@@ -54,7 +54,13 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
     formData.append("numInStock", numInStock);
 
     if (game) {
-      // await updateGame(game._id, formData);
+      const response = await axiosPrivate.put(
+        `/admin/update/?id=${game._id}`,
+        formData
+      );
+
+      console.log(response);
+
       resetGamesData();
       toggleShow(false);
     } else {
@@ -158,24 +164,21 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
       <fieldset className="d-flex flex-column">
         <label className="text-muted mb-2">Price</label>
 
-        <input
-          type="text"
-          name="price"
-          value={+price}
-          onChange={handleChange}
-        />
+        <input type="text" name="price" value={price} onChange={handleChange} />
       </fieldset>
 
       <fieldset className="d-flex flex-column">
         <label className="text-muted mb-2">Image</label>
 
         <input
-          className={`${image.file && "mb-3"}`}
+          className={`${image?.file && "mb-3"}`}
           type="file"
           accept="jpg jpeg png"
           onChange={handleFileChange}
         />
-        {image.file && <img width={200} height={300} src={image.data} alt="" />}
+        {image?.file && (
+          <img width={200} height={300} src={image?.data} alt="" />
+        )}
       </fieldset>
 
       <fieldset className="d-flex flex-column mb-5">
@@ -184,7 +187,7 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
         <input
           type="text"
           name="numInStock"
-          value={+numInStock}
+          value={numInStock}
           onChange={handleChange}
         />
       </fieldset>
