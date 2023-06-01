@@ -8,7 +8,7 @@ const {
 
 router.get("/", getGames);
 
-router.get("/game/image/", getGameImage);
+router.get("/image/", getGameImage);
 
 router.get("/categories", getCategories);
 

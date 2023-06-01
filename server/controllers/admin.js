@@ -113,4 +113,16 @@ module.exports = {
       return res.status(500).json({ error });
     }
   },
+
+  getCategories: async (_req, res) => {
+    const categories = await Category.find().sort({
+      categoryName: "ascending",
+    });
+
+    if (!categories) {
+      return res.status(500).json({ error: "Failed to find categories" });
+    }
+
+    return res.send(categories);
+  },
 };

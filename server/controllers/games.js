@@ -26,15 +26,28 @@ module.exports = {
       const totalGames = (await Game.find()).length;
       const totalPages = Math.ceil(totalGames / size);
 
-      let category;
-      if (req.query.category) {
-        category = await Category.findOne({
-          categoryEnum: req.query.category,
-        });
+      // TODO: clean up later
+      let categories;
+      if (req.query.categories) {
+        categories = await Promise.all(
+          req.query.categories.split(",").map(
+            async (category) =>
+              await Category.findOne({
+                categoryEnum: category,
+              })
+          )
+        );
       }
 
+      console.log(req.query.search);
+
+      const regex = req.query.search;
+
       const games = await Game.find({
-        ...(req.query.category && { category }),
+        ...(categories && { category: { $in: categories } }),
+        ...(req.query.search && {
+          name: { $regex: new RegExp(regex, "i") },
+        }),
       })
         .sort({ name: "ascending" })
         .skip(page * size)
