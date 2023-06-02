@@ -25,6 +25,9 @@ app.use(`${api}/user`, userRoute);
 const gamesRoute = require("./routes/games");
 app.use(`${api}/games`, gamesRoute);
 
+const stripeRoute = require("./routes/stripe");
+app.use(`${api}/stripe`, stripeRoute);
+
 app.use(verifyJwt);
 const adminRoute = require("./routes/admin");
 app.use(`${api}/admin`, adminRoute);
