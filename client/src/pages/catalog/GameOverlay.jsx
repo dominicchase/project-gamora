@@ -5,6 +5,8 @@ import { ReactComponent as CloseIcon } from "../../assets/svg/x-thin.svg";
 import { setCart } from "../../store/reducers/CartReducer";
 import useAuth from "../../hooks/useAuth";
 import { axiosPrivate } from "../../api/axios";
+import { useMemo, useState } from "react";
+import { toast } from "react-hot-toast";
 
 export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
   const dispatch = useDispatch();
@@ -13,24 +15,43 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
   const { game } = useSelector((state) => state.gameState);
   const { cart } = useSelector((state) => state.cartState);
 
-  const cartGame = cart.length
-    ? cart.find((cartGame) => cartGame._id === game._id)
+  console.log({ cart });
+
+  const cartGame = cart?.length
+    ? cart.find((cartGame) => cartGame.game._id === game._id)
     : null;
 
+  const currQuantity = cartGame ? cartGame.quantity : 0;
+
+  const [quantity, setQuantity] = useState(0);
+
+  const maxQuantity = useMemo(
+    () => game.numInStock - currQuantity,
+    [game.numInStock, currQuantity]
+  );
+
   const cartComplement = cart
-    ? cart.filter((cartGame) => cartGame._id !== game._id)
+    ? cart.filter((cartGame) => cartGame.game._id !== game._id)
     : null;
 
   const handleAddToCart = async () => {
-    // TODO: modify qty later based on form amt
-    const newCartGame = { game, quantity: 1 };
+    const newCartGame = { game, quantity: +quantity };
+
+    console.log(id);
 
     if (id) {
-      const response = await axiosPrivate.post(`/cart/add-to-cart/?id=${id}`, [
-        newCartGame,
-      ]);
+      try {
+        const response = await axiosPrivate.post(
+          `/cart/add-to-cart/?id=${id}`,
+          [newCartGame]
+        );
 
-      dispatch(setCart(response.data.games));
+        toast.success("Added to cart");
+
+        dispatch(setCart(response.data.games));
+      } catch (error) {
+        toast.error(error);
+      }
     } else {
       if (cartGame) {
         dispatch(
@@ -42,7 +63,11 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
       } else {
         dispatch(setCart([...cartComplement, newCartGame]));
       }
+
+      toast.success("Added to cart");
     }
+
+    setQuantity(0);
   };
 
   return (
@@ -56,7 +81,7 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
 
         <span className="d-block">${game.price}</span>
 
-        <span className="d-block">Quantity</span>
+        <span className="d-block">Quantity: {game.numInStock}</span>
 
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -68,16 +93,24 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
           culpa qui officia deserunt mollit anim id est laborum.
         </p>
 
-        <button
-          onClick={handleAddToCart}
-          disabled={cartGame ? cartGame.quantity === game.numInStock : false}
-        >
-          Add to Cart
-        </button>
+        <div className="mb-5">
+          <input
+            type="number"
+            min={0}
+            max={maxQuantity}
+            value={quantity}
+            onChange={(event) => setQuantity(event.target.value)}
+          />
+          <button onClick={handleAddToCart} disabled={!maxQuantity}>
+            Add to Cart
+          </button>
+        </div>
 
-        <button onClick={() => toggleShowGame(false)}>
-          <CloseIcon />
-        </button>
+        <div>
+          <button className="w-25" onClick={() => toggleShowGame(false)}>
+            <CloseIcon />
+          </button>
+        </div>
       </div>
     </div>
   );

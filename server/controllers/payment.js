@@ -4,6 +4,7 @@ const { CartGame } = require("../models/cartGame");
 module.exports = {
   pay: async (req, res) => {
     const cartGames = req.body;
+    const { userId } = req.query;
 
     let theCartId;
     try {
@@ -32,11 +33,11 @@ module.exports = {
         payment_method_types: ["card"],
         mode: "payment",
         line_items,
-        success_url: `https://localhost:3000/cart`,
-        cancel_url: `https://localhost:3000/`,
+        success_url: `https://localhost:3000/order`,
+        cancel_url: `https://localhost:3000/cart`,
         // TODO: do i need this?
         metadata: {
-          // userId:
+          userId,
           cartId: theCartId,
         },
         shipping_address_collection: {
@@ -84,16 +85,6 @@ module.exports = {
             },
           },
         ],
-        // custom_fields: [
-        //   {
-        //     key: theCartId,
-        //     label: {
-        //       type: "custom",
-        //       custom: "Thing",
-        //     },
-        //     type: "text",
-        //   },
-        // ],
       });
 
       return res.json({ url: session.url });

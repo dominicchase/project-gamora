@@ -5,6 +5,7 @@ import useAuth from "../../hooks/useAuth";
 import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 import { ReactComponent as CloseIcon } from "../../assets/svg/x-thin.svg";
 import "../../assets/css/cart.css";
+import { toast } from "react-hot-toast";
 
 export const CartOverlay = ({ toggleShowCart }) => {
   const navigate = useNavigate();
@@ -15,20 +16,36 @@ export const CartOverlay = ({ toggleShowCart }) => {
   const axiosPrivate = useAxiosPrivate();
 
   const total = cart
-    .reduce(
+    ?.reduce(
       (accumulator, cartGame) =>
         accumulator + cartGame.game.price * cartGame.quantity,
       0
     )
-    .toFixed(2);
+    ?.toFixed(2);
 
-  const removeFromCart = async (cartGameId) => {
+  console.log({ cart });
+
+  const removeFromCart = async (cartGame) => {
     if (id) {
-      const response = await axiosPrivate.get(
-        `/cart/remove-from-cart/?id=${cartGameId}`
+      try {
+        const response = await axiosPrivate.get(
+          `/cart/remove-from-cart/?id=${cartGame._id}`
+        );
+
+        toast.success("Removed from cart");
+
+        dispatch(setCart(response.data.games));
+      } catch (error) {
+        toast.error(error);
+      }
+    } else {
+      const cartComplement = cart.filter(
+        ({ game }) => game._id !== cartGame.game._id
       );
 
-      dispatch(setCart(response.data.games));
+      toast.success("Removed from cart");
+
+      dispatch(setCart(cartComplement));
     }
   };
 
@@ -45,9 +62,9 @@ export const CartOverlay = ({ toggleShowCart }) => {
   return (
     <div className="cart-overlay d-flex justify-content-end">
       <div className="col-3 cart-overlay-content">
-        {cart.map((cartGame) => (
+        {cart?.map((cartGame) => (
           <article className="mb-2" key={`cart-game-${cartGame.game._id}`}>
-            <button onClick={() => removeFromCart(cartGame._id)}>X</button>
+            <button onClick={() => removeFromCart(cartGame)}>X</button>
             <img className="w-100" src={cartGame.game.image} alt="" />
           </article>
         ))}
@@ -55,7 +72,7 @@ export const CartOverlay = ({ toggleShowCart }) => {
 
       <div className="px-5 py-3 col-4 cart-overlay-content">
         <div id="header" className="d-flex justify-content-between">
-          <h3 className="span">Cart ({cart.length})</h3>
+          <h3 className="span">Cart ({cart?.length ?? 0})</h3>
 
           <button onClick={() => toggleShowCart(false)}>
             <CloseIcon />

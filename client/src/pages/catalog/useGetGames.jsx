@@ -9,8 +9,6 @@ export const useGetGames = (categories, search) => {
   const [hasMore, toggleHasMore] = useState(false);
   const axiosPrivate = useAxiosPrivate();
 
-  console.log(search);
-
   const [pagination, setPagination] = useState({
     page: 0,
     size: 10,

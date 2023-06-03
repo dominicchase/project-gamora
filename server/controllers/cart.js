@@ -4,41 +4,43 @@ const { Game } = require("../models/game");
 
 module.exports = {
   addToCart: async (req, res) => {
-    const games = req.body;
+    let games = req.body;
 
     try {
       const cart = await Cart.findOne({ userId: req.query.id });
 
-      //  // ----------- VALIDATION -------------
-      //  for (var i = 0; i < games.length; i++) {
-      //   // check if game DNE in Game model
-      //   const game = await Game.findById(games[i].game);
+      // ----------- VALIDATION -------------
+      if (cart) {
+        for (var i = 0; i < games.length; i++) {
+          // check if game DNE in Game model
+          const game = await Game.findById(games[i].game);
 
-      //   if (!game) {
-      //     return res
-      //       .status(500)
-      //       .json({ error: `Failed to find game: ${games[i].game}` });
-      //   }
+          if (!game) {
+            return res
+              .status(500)
+              .json({ error: `Failed to find game: ${games[i].game}` });
+          }
 
-      //   // check if incomingQuantity would exceed numInStock
-      //   const cartGame = await CartGame.findOne({ cartId: cart._id, game });
+          // check if incomingQuantity would exceed numInStock
+          const cartGame = await CartGame.findOne({ cartId: cart._id, game });
 
-      //   const currCartGameQuantity = cartGame?.quantity ?? 0;
-      //   const nextCartGameQuantity = games[i].quantity;
-      //   const quantity = currCartGameQuantity + nextCartGameQuantity;
+          const currCartGameQuantity = cartGame?.quantity ?? 0;
+          const nextCartGameQuantity = games[i].quantity;
+          const quantity = currCartGameQuantity + nextCartGameQuantity;
 
-      //   if (quantity > game.numInStock) {
-      //     return res.status(500).json({
-      //       error: `Failed to add ${nextCartGameQuantity} ${
-      //         nextCartGameQuantity > 1 ? "copies" : "copy"
-      //       } of ${
-      //         game.name
-      //       } to cart because quantity = ${currCartGameQuantity} and numInStock = ${
-      //         game.numInStock
-      //       }`,
-      //     });
-      //   }
-      // }
+          if (quantity > game.numInStock) {
+            return res.status(500).json({
+              error: `Failed to add ${nextCartGameQuantity} ${
+                nextCartGameQuantity > 1 ? "copies" : "copy"
+              } of ${
+                game.name
+              } to cart because quantity = ${currCartGameQuantity} and numInStock = ${
+                game.numInStock
+              }`,
+            });
+          }
+        }
+      }
 
       // ----------- ADD TO CART LOGIC -------------
       if (!cart) {

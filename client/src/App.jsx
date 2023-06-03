@@ -14,9 +14,29 @@ import { useIsAuthenticated } from "./hooks/useIsAuthenticated";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/css/App.css";
 import { Search } from "./pages/search";
+import { Toaster } from "react-hot-toast";
+import useAuth from "./hooks/useAuth";
+import { useAxiosPrivate } from "./hooks/useAxiosPrivate";
+import { useDispatch } from "react-redux";
+import { setCart } from "./store/reducers/CartReducer";
+import { Order } from "./pages/Order";
 
 const App = () => {
   useIsAuthenticated();
+  const dispatch = useDispatch();
+  const { id } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
+
+  // TODO: extract to custom hook
+  useEffect(() => {
+    const getCart = async () => {
+      if (id) {
+        const response = await axiosPrivate.get(`/cart/?id=${id}`);
+        dispatch(setCart(response.data.games));
+      }
+    };
+    getCart();
+  });
 
   const [showGame, toggleShowGame] = useState(false);
   const [showCart, toggleShowCart] = useState(false);
@@ -31,6 +51,8 @@ const App = () => {
 
   return (
     <>
+      <Toaster />
+
       <Navbar toggleShowCart={toggleShowCart} />
 
       <div className="screen-height container py-5">
@@ -47,6 +69,7 @@ const App = () => {
             element={<Search toggleShowGame={toggleShowGame} />}
           />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/order" element={<Order />} />
         </Routes>
       </div>
 

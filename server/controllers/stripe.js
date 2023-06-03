@@ -1,4 +1,4 @@
-const stripe = require("stripe")(process.env.STRIPE_TEST_SECRET_KEY);
+// const stripe = require("stripe")(process.env.STRIPE_TEST_SECRET_KEY);
 const { Cart } = require("../models/cart");
 const { CartGame } = require("../models/cartGame");
 const { Game } = require("../models/game");
@@ -45,6 +45,7 @@ module.exports = {
           );
 
           const order = new Order({
+            userId: event.data.object.metadata.userId,
             date: Date(created),
             customer: {
               name: shipping.name,

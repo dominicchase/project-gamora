@@ -38,6 +38,9 @@ app.use(`${api}/cart`, cartRoute);
 const paymentRoute = require("./routes/payment");
 app.use(`${api}/pay`, paymentRoute);
 
+const orderRoute = require("./routes/order");
+app.use(`${api}/order`, orderRoute);
+
 mongoose
   .connect(process.env.CONNECTION_STRING, {
     useUnifiedTopology: true, // For Mongoose 5 only. Remove for Mongoose 6+
