@@ -31,6 +31,15 @@ export const Cart = () => {
     }
   };
 
+  const handlePayment = async () => {
+    const cartGameIds = cart.map((cartGame) => cartGame._id);
+    const response = await axiosPrivate.post("/pay", cartGameIds);
+
+    dispatch(setCart([]));
+
+    window.location.href = response.data.url;
+  };
+
   return (
     <div>
       {cart.map((cartGame) => (
@@ -64,7 +73,7 @@ export const Cart = () => {
           Subtotal ({numberOfGames} games): ${subtotal}
         </strong>
 
-        {/* <button onClick={handlePayment}>Proceed to Payment</button> */}
+        <button onClick={handlePayment}>Proceed to Payment</button>
       </div>
     </div>
   );
