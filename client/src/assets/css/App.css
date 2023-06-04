@@ -1,5 +1,20 @@
+/* $gray: #b4b8c5;
+$light-gray: #e9ebf8;
+$primary: #e2c044;
+$success: #52ffb8; */
+
 #root {
-  background-color: #222831;
+  --dark-gray: #37323e;
+  --gray: #6d6a75;
+  --light-gray: #bfbdc1;
+  --primary: #deb841;
+  --secondary: #de9e36;
+  --success: #52ffb8;
+  background-color: var(--dark-gray);
+}
+
+.text-primary {
+  color: var(--primary);
 }
 
 .App {
@@ -50,8 +65,4 @@ label {
 
 .screen-height {
   min-height: 100vh;
-}
-
-.span {
-  color: white;
 }

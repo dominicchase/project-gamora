@@ -6,7 +6,18 @@ import { setGame } from "../../store/reducers/GameReducer";
 export const Search = ({ toggleShowGame }) => {
   const dispatch = useDispatch();
   const [search, setSearch] = useState();
-  const { lastGameRef, games } = useGetGames(null, search);
+  const [pagination, setPagination] = useState({
+    page: 0,
+    size: 10,
+    totalPages: undefined,
+  });
+
+  const { lastGameRef, games } = useGetGames(
+    pagination,
+    setPagination,
+    null,
+    search
+  );
 
   const handleClick = (game) => {
     dispatch(setGame(game));

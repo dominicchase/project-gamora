@@ -23,9 +23,6 @@ module.exports = {
     const size = req.query.size ?? 12;
 
     try {
-      const totalGames = (await Game.find()).length;
-      const totalPages = Math.ceil(totalGames / size);
-
       // TODO: clean up later
       let categories;
       if (req.query.categories) {
@@ -55,6 +52,12 @@ module.exports = {
         .limit(size)
         .lean()
         .populate("category");
+
+      const totalGames =
+        categories || req.query.search
+          ? games.length
+          : (await Game.find()).length;
+      const totalPages = Math.ceil(totalGames / size);
       res
         .status(200)
         .send({ games: games, page: +page, totalPages, totalGames });

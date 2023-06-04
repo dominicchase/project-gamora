@@ -1,15 +1,14 @@
-export const GameCard = ({ game, handleClick, lastGameRef }) => {
+export const GameCard = ({ game, handleClick, lastGameRef, children }) => {
   return (
-    <article
-      className="col-sm flex-grow-0 mb-4"
-      onClick={() => handleClick(game)}
-      ref={lastGameRef}
-    >
+    <article className="game-card col-sm flex-grow-0 mb-4" ref={lastGameRef}>
+      {children}
       <img
-        className="game-card"
+        style={{ objectFit: "cover" }}
+        onClick={() => handleClick(game)}
+        className="game-card-img"
         src={game.image}
         width={300}
-        height={400}
+        height={450}
         alt=""
       />
     </article>

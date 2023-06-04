@@ -1,5 +1,4 @@
 import { useDispatch, useSelector } from "react-redux";
-import "../../assets/css/admin.css";
 import "../../assets/css/Game.css";
 import { ReactComponent as CloseIcon } from "../../assets/svg/x-thin.svg";
 import { setCart } from "../../store/reducers/CartReducer";

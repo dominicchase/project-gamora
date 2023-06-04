@@ -3,17 +3,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 import axios from "../../api/axios";
 
-export const useGetGames = (categories, search) => {
+export const useGetGames = (pagination, setPagination, categories, search) => {
   const [games, setGames] = useState([]);
   const [isLoading, toggleIsLoading] = useState(false);
   const [hasMore, toggleHasMore] = useState(false);
   const axiosPrivate = useAxiosPrivate();
-
-  const [pagination, setPagination] = useState({
-    page: 0,
-    size: 10,
-    totalPages: undefined,
-  });
 
   const { page, size } = pagination;
 
@@ -73,7 +67,11 @@ export const useGetGames = (categories, search) => {
   useEffect(() => {
     toggleIsLoading(true);
 
-    handleGetGames();
+    if (search?.length || categories?.length) {
+      handleGetGames();
+    } else {
+      handleGetGames("append");
+    }
 
     toggleIsLoading(false);
   }, [page, categories, search]);

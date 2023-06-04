@@ -9,7 +9,6 @@ import { Modal } from "../../core/Modal";
 import axios from "../../api/axios";
 import { useGetGames } from "../catalog/useGetGames";
 
-import "../../assets/css/admin.css";
 import { GameCard } from "../../core/GameCard";
 
 export const Admin = () => {
