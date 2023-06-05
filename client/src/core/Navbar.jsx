@@ -1,10 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "../api/axios";
 import useAuth from "../hooks/useAuth";
 import { setSearch } from "../store/reducers/GameReducer";
-import { setCart } from "../store/reducers/CartReducer";
 import GamoraLogo from "../assets/gamora-logo.png";
+import { SideDrawer } from "./SideDrawer";
 import { ReactComponent as SearchIcon } from "../assets/svg/search.svg";
 import { ReactComponent as CartIcon } from "../assets/svg/cart.svg";
 import "../assets/css/navbar.css";
@@ -23,13 +22,27 @@ export const Navbar = ({ toggleShowCart }) => {
   //   navigate("/");
   // };
 
+  const MobileNavbar = () => (
+    <div className="col d-flex d-md-none">
+      <div className="col-3 d-flex flex-column justify-content-center align-items-start">
+        <SideDrawer />
+      </div>
+
+      <div className="col d-flex d-md-none justify-content-center">
+        <img src={GamoraLogo} alt="" width={125} />
+      </div>
+    </div>
+  );
+
   return (
     <nav className="navbar">
-      <div className="col-3">
+      <MobileNavbar />
+
+      <div className="col-3 d-none d-md-block">
         <img src={GamoraLogo} alt="" width={125} />
       </div>
 
-      <div className="col d-flex justify-content-center gap-5">
+      <div className="col d-none d-md-flex justify-content-center gap-3">
         <Link className="h5 text-decoration-none" to="/admin">
           Admin
         </Link>
@@ -40,7 +53,7 @@ export const Navbar = ({ toggleShowCart }) => {
       </div>
 
       <div className="col-3 d-flex justify-content-end gap-3">
-        <div className="search">
+        <div className="d-none d-lg-block search">
           <SearchIcon className="search-logo" width={30} height={30} />
 
           <input

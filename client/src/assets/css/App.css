@@ -37,16 +37,18 @@ $success: #52ffb8; */
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
 a,
 span,
 strong,
 p,
 label {
   color: var(--light-gray);
+}
+
+a:active,
+a:focus,
+a:hover {
+  color: var(--primary);
 }
 
 @keyframes App-logo-spin {

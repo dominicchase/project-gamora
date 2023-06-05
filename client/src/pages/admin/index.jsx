@@ -48,7 +48,7 @@ export const Admin = () => {
           </button>
         </article>
 
-        {games.map((game) => (
+        {/* {games.map((game) => (
           <>
             <button
               // className="edit-btn"
@@ -70,7 +70,7 @@ export const Admin = () => {
               key={`game-${game._id}`}
             />
           </>
-        ))}
+        ))} */}
       </div>
 
       <Modal show={show} toggleShow={toggleShow}>
