@@ -41,6 +41,16 @@ module.exports = {
         regex = req.query.search;
       }
 
+      const allGames = await Game.find({
+        ...(categories && { category: { $in: categories } }),
+        ...(req.query.search && {
+          name: { $regex: new RegExp(regex, "i") },
+        }),
+      })
+        .sort({ name: "ascending" })
+        .skip(page * size)
+        .populate("category");
+
       const games = await Game.find({
         ...(categories && { category: { $in: categories } }),
         ...(req.query.search && {
@@ -49,14 +59,11 @@ module.exports = {
       })
         .sort({ name: "ascending" })
         .skip(page * size)
+        .populate("category")
         .limit(size)
-        .lean()
-        .populate("category");
+        .lean();
 
-      const totalGames =
-        categories || req.query.search
-          ? games.length
-          : (await Game.find()).length;
+      const totalGames = allGames.length;
       const totalPages = Math.ceil(totalGames / size);
       res
         .status(200)

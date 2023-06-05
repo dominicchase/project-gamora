@@ -50,25 +50,24 @@ const App = () => {
   }, [showGame, showCart]);
 
   return (
-    <>
+    <div className="container">
       <Toaster />
 
       <Navbar toggleShowCart={toggleShowCart} />
 
-      <div className="screen-height container py-5">
+      <div className="screen-height mt-4">
         <Routes>
           <Route path="/auth" element={<Auth />} />
+
           <Route path="/admin" element={<Admin />} />
+
           <Route
             path="/"
             element={<Catalog toggleShowGame={toggleShowGame} />}
           />
-          {/* <Route path="/blog" element={<Blog />} /> */}
-          <Route
-            path="/search"
-            element={<Search toggleShowGame={toggleShowGame} />}
-          />
+
           <Route path="/cart" element={<Cart />} />
+
           <Route path="/order" element={<Order />} />
         </Routes>
       </div>
@@ -81,7 +80,7 @@ const App = () => {
       )}
 
       {showCart && <CartOverlay toggleShowCart={toggleShowCart} />}
-    </>
+    </div>
   );
 };
 

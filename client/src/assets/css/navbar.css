@@ -1,4 +1,23 @@
 .navbar {
-  border-bottom: 0.1rem solid var(--primary);
-  /* background-color: var(--secondary); */
+  border-bottom: 2px solid var(--primary);
+  padding: 1.5rem 1.5rem !important;
+}
+
+.search {
+  background-color: var(--light-gray);
+  border-radius: 5px;
+  padding: 0.5rem 0.5rem;
+  position: relative;
+}
+
+.search-field,
+.search-field:focus {
+  background-color: var(--light-gray);
+  border: none;
+  outline: none;
+  padding-left: 2.5rem;
+}
+
+.search-logo {
+  position: absolute;
 }

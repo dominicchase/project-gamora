@@ -1,67 +1,68 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
-
-import "../assets/css/navbar.css";
-import useAuth from "../hooks/useAuth";
-import { useDispatch } from "react-redux";
-import { setCart } from "../store/reducers/CartReducer";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "../api/axios";
-import { ReactComponent as CartIcon } from "../assets/svg/cart.svg";
+import useAuth from "../hooks/useAuth";
+import { setSearch } from "../store/reducers/GameReducer";
+import { setCart } from "../store/reducers/CartReducer";
+import GamoraLogo from "../assets/gamora-logo.png";
 import { ReactComponent as SearchIcon } from "../assets/svg/search.svg";
-import { ReactComponent as UserIcon } from "../assets/svg/user.svg";
+import { ReactComponent as CartIcon } from "../assets/svg/cart.svg";
+import "../assets/css/navbar.css";
 
 export const Navbar = ({ toggleShowCart }) => {
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
+  const { search } = useSelector((state) => state.gameState);
 
-  const handleLogout = async () => {
-    await axios.get("/user/logout", { withCredentials: true });
+  // const handleLogout = async () => {
+  //   await axios.get("/user/logout", { withCredentials: true });
 
-    setAuth({});
-    dispatch(setCart([]));
-    navigate("/");
-  };
+  //   setAuth({});
+  //   dispatch(setCart([]));
+  //   navigate("/");
+  // };
 
   return (
-    <nav className="navbar px-5 d-flex py-4">
-      <span className="col-3">GAME GARAGE</span>
+    <nav className="navbar">
+      <div className="col-3">
+        <img src={GamoraLogo} alt="" width={125} />
+      </div>
 
-      <ul className="col-6 d-flex justify-content-center gap-3 list-unstyled">
-        {auth?.isAdmin && (
-          <li>
-            <Link className="fw-bold text-decoration-none" to="/admin">
-              Admin
-            </Link>
-          </li>
-        )}
-
-        <li>
-          <Link className="fw-bold text-decoration-none" to="/">
-            Catalog
-          </Link>
-        </li>
-        {/* <li>
-          <Link to="/blog">BLOG</Link>
-        </li> */}
-      </ul>
-
-      <div className="col d-flex justify-content-end gap-3">
-        <Link to="/search">
-          <SearchIcon width={30} height={30} />
+      <div className="col d-flex justify-content-center gap-5">
+        <Link className="h5 text-decoration-none" to="/admin">
+          Admin
         </Link>
 
-        {!!auth.accessToken && (
-          <button className="bg-transparent border-0" onClick={handleLogout}>
-            <UserIcon width={30} height={30} />
-          </button>
-        )}
+        <Link className="h5 text-decoration-none" to="/">
+          Catalog
+        </Link>
+      </div>
 
-        {!auth.accessToken && (
-          <Link to="/auth" state={{ from: location.pathname }}>
+      <div className="col-3 d-flex justify-content-end gap-3">
+        <div className="search">
+          <SearchIcon className="search-logo" width={30} height={30} />
+
+          <input
+            className="search-field"
+            value={search}
+            onChange={(event) => dispatch(setSearch(event.target.value))}
+            placeholder="Search..."
+            type="text"
+          />
+        </div>
+
+        {/* {!!auth.accessToken && (
+          <button className="bg-transparent border-0" onClick={handleLogout}>
+          <UserIcon width={30} height={30} />
+          </button>
+          )}
+          
+          {!auth.accessToken && (
+            <Link to="/auth" state={{ from: location.pathname }}>
             <UserIcon width={30} height={30} />
-          </Link>
-        )}
+            </Link>
+          )} */}
 
         <button
           className="bg-transparent border-0"

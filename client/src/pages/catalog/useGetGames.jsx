@@ -1,17 +1,19 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
+import { getGames } from "../../api/axios";
 
-import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
-import axios from "../../api/axios";
+export const useGetGames = () => {
+  const observer = useRef();
+  const { search } = useSelector((state) => state.gameState);
 
-export const useGetGames = (pagination, setPagination, categories, search) => {
   const [games, setGames] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  const [page, setPage] = useState(0);
+  const size = 10;
+
   const [isLoading, toggleIsLoading] = useState(false);
   const [hasMore, toggleHasMore] = useState(false);
-  const axiosPrivate = useAxiosPrivate();
-
-  const { page, size } = pagination;
-
-  const observer = useRef();
 
   const lastGameRef = useCallback(
     (node) => {
@@ -25,7 +27,7 @@ export const useGetGames = (pagination, setPagination, categories, search) => {
 
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasMore) {
-          setPagination({ ...pagination, page: page + 1 });
+          setPage((prevState) => prevState + 1);
         }
       });
 
@@ -36,62 +38,41 @@ export const useGetGames = (pagination, setPagination, categories, search) => {
     [isLoading, hasMore]
   );
 
-  const handleGetGames = async (action, deletedGamePage) => {
-    const response = await axios.get(
-      `/games/?page=${deletedGamePage ?? page}&size=${size}${
-        categories?.length ? `&categories=${categories?.join(",")}` : ""
-      }${search?.length ? `&search=${search}` : ""}`
-    );
-
-    switch (action) {
-      case "append":
-        setGames([...games, ...response.data.games]);
-        break;
-
-      case "delete":
-        setGames([
-          ...games.slice(0, deletedGamePage * size),
-          ...response.data.games,
-        ]);
-        break;
-
-      default:
-        setGames(response.data.games);
-    }
-
-    toggleHasMore(response.data.page < response.data.totalPages - 1);
-
-    setPagination({ ...pagination, totalPages: response.data.totalPages });
-  };
-
   useEffect(() => {
     toggleIsLoading(true);
 
-    if (search?.length || categories?.length) {
-      handleGetGames();
-    } else {
-      handleGetGames("append");
-    }
+    const handleGetGames = async () => {
+      const { data } = await getGames({ page, size, categories, search });
+      if (page === 0) {
+        setGames(data.games);
+      } else {
+        setGames([...games, ...data.games]);
+      }
+
+      toggleHasMore(data.page < data.totalPages - 1);
+    };
+
+    handleGetGames();
 
     toggleIsLoading(false);
-  }, [page, categories, search]);
+  }, [categories, page, search]);
 
-  const handleDeleteGame = async (game) => {
-    const deletedGameIndex = games.indexOf(game);
-    const deletedGamePage = Math.floor(deletedGameIndex / size);
+  const handleChangeCategory = async (event) => {
+    const { value, checked } = event.target;
 
-    await axiosPrivate.delete(`/admin/delete/?id=${game._id}`);
+    if (checked) {
+      setCategories((prevState) => [...prevState, value]);
+    } else {
+      setCategories(categories.filter((category) => category !== value));
+    }
 
-    handleGetGames("delete", deletedGamePage);
+    setPage(0);
   };
-
-  const resetGamesData = () => handleGetGames();
 
   return {
     games,
-    isLoading,
+    categories,
+    handleChangeCategory,
     lastGameRef,
-    resetGamesData,
-    handleDeleteGame,
   };
 };

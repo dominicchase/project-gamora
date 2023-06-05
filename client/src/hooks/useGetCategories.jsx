@@ -2,16 +2,16 @@ import { useEffect, useState } from "react";
 import axios from "../api/axios";
 
 export const useGetCategories = () => {
-  const [categories, setCategories] = useState([]);
+  const [allCategories, setAllCategories] = useState([]);
 
   useEffect(() => {
     const getCategories = async () => {
-      const response = await axios.get("/games/categories");
-      setCategories(response.data);
+      const { data } = await axios.get("/games/categories");
+      setAllCategories(data);
     };
 
     getCategories();
   }, []);
 
-  return { categories };
+  return { allCategories };
 };

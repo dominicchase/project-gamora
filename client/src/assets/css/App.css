@@ -4,17 +4,11 @@ $primary: #e2c044;
 $success: #52ffb8; */
 
 #root {
-  --dark-gray: #37323e;
-  --gray: #6d6a75;
-  --light-gray: #bfbdc1;
-  --primary: #deb841;
-  --secondary: #de9e36;
-  --success: #52ffb8;
-  background-color: var(--dark-gray);
-}
-
-.text-primary {
-  color: var(--primary);
+  --background: #222831;
+  --gray: #393e46;
+  --light-gray: #eeeeee;
+  --primary: #ffd369;
+  background-color: var(--background);
 }
 
 .App {
@@ -47,11 +41,12 @@ $success: #52ffb8; */
   color: #61dafb;
 }
 
+a,
 span,
 strong,
 p,
 label {
-  color: rgb(255, 255, 255);
+  color: var(--light-gray);
 }
 
 @keyframes App-logo-spin {

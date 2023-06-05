@@ -11,8 +11,23 @@ export default axios.create({
 
 export const axiosPrivate = axios.create({
   baseURL: BASE_URL,
-  // headers: {
-  //   "Content-Type": "application/json",
-  // },
   withCredentials: true,
 });
+
+export const getGames = (body) => {
+  const { page, size, categories, search } = body;
+  console.log(categories);
+  console.log(body.categories);
+
+  let url = `${BASE_URL}/games/?page=${page}&size=${size}`;
+
+  if (categories?.length) {
+    url += `&categories=${categories.join(",")}`;
+  }
+
+  if (search?.length) {
+    url += `&search=${search}`;
+  }
+
+  return axios.get(url);
+};
