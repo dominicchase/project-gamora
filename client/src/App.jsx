@@ -41,36 +41,34 @@ const App = () => {
   const [showGame, toggleShowGame] = useState(false);
   const [showCart, toggleShowCart] = useState(false);
 
-  useEffect(() => {
-    if (showGame || showCart) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [showGame, showCart]);
+  // useEffect(() => {
+  //   if (showGame || showCart) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "unset";
+  //   }
+  // }, [showGame, showCart]);
 
   return (
-    <div className="container">
+    <div className="container px-0">
       <Toaster />
 
-      <Navbar toggleShowCart={toggleShowCart} />
+      <Navbar
+        toggleShowCart={toggleShowCart}
+        style={{ border: "4px solid red", position: "sticky", top: 0 }}
+      />
 
-      <div className="screen-height mt-4">
-        <Routes>
-          <Route path="/auth" element={<Auth />} />
+      <Routes>
+        <Route path="/" element={<Catalog toggleShowGame={toggleShowGame} />} />
 
-          <Route path="/admin" element={<Admin />} />
+        <Route path="/auth" element={<Auth />} />
 
-          <Route
-            path="/"
-            element={<Catalog toggleShowGame={toggleShowGame} />}
-          />
+        <Route path="/admin" element={<Admin />} />
 
-          <Route path="/cart" element={<Cart />} />
+        <Route path="/cart" element={<Cart />} />
 
-          <Route path="/order" element={<Order />} />
-        </Routes>
-      </div>
+        <Route path="/order" element={<Order />} />
+      </Routes>
 
       {showGame && (
         <GameOverlay

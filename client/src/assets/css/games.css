@@ -10,7 +10,9 @@
 
 .games-category {
   border-right: 2px solid var(--primary);
+  height: 100vh;
   position: sticky;
+  top: 120px;
 }
 
 .checkbox {

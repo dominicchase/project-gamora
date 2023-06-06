@@ -19,8 +19,8 @@ export const Catalog = ({ toggleShowGame }) => {
 
   return (
     <div className="d-flex justify-content-between">
-      {/* <div className="games-category col-3">
-        <strong className="d-block mb-3">Category</strong>
+      <div className="games-category col-3 d-none d-md-block px-4">
+        <strong className="d-block mb-3 h5">Category</strong>
 
         {allCategories.map(({ categoryName, categoryEnum }) => (
           <div className="mb-2" key={`category-${categoryEnum}`}>
@@ -35,24 +35,22 @@ export const Catalog = ({ toggleShowGame }) => {
             <span>{categoryName}</span>
           </div>
         ))}
-      </div> */}
-
-      <div className="p-0 catalog-games col">
-        {games.length ? (
-          <div className="row ps-4 justify-content-start">
-            {games.map((game, index) => (
-              <GameCard
-                game={game}
-                handleClick={handleClick}
-                lastGameRef={index === games.length - 1 ? lastGameRef : null}
-                key={`game-${game._id}`}
-              ></GameCard>
-            ))}
-          </div>
-        ) : (
-          <span>No Games</span>
-        )}
       </div>
+
+      {games.length ? (
+        <div className="row justify-content-center px-4">
+          {games.map((game, index) => (
+            <GameCard
+              game={game}
+              handleClick={handleClick}
+              lastGameRef={index === games.length - 1 ? lastGameRef : null}
+              key={`game-${game._id}`}
+            ></GameCard>
+          ))}
+        </div>
+      ) : (
+        <span>No Games</span>
+      )}
     </div>
   );
 };

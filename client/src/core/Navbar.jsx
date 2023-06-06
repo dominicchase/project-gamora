@@ -35,7 +35,10 @@ export const Navbar = ({ toggleShowCart }) => {
   );
 
   return (
-    <nav className="navbar">
+    <nav
+      className="navbar mb-4"
+      // style={{ border: "4px solid red", position: "sticky", top: 0 }}
+    >
       <MobileNavbar />
 
       <div className="col-3 d-none d-md-block">

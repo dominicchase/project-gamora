@@ -14,5 +14,6 @@ module.exports = {
     "react-refresh/only-export-components": "warn",
     "react/prop-types": "off",
     "no-unused-vars": "off",
+    "jsx-a11y/alt-text": [0],
   },
 };
