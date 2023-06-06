@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export const SideDrawer = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  // TODO: find better approach
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [isOpen]);
 
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);

@@ -14,8 +14,6 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
   const { game } = useSelector((state) => state.gameState);
   const { cart } = useSelector((state) => state.cartState);
 
-  console.log({ cart });
-
   const cartGame = cart?.length
     ? cart.find((cartGame) => cartGame.game._id === game._id)
     : null;
@@ -35,8 +33,6 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
 
   const handleAddToCart = async () => {
     const newCartGame = { game, quantity: +quantity };
-
-    console.log(id);
 
     if (id) {
       try {
@@ -70,17 +66,24 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
   };
 
   return (
-    <div className="game-overlay d-flex p-5 gap-4">
-      <div className="w-50">
-        <img src={game.image} width={"100%"} alt="" />
+    <div className="game-overlay d-flex p-5">
+      <div className="col-5">
+        <img className="game" src={game.image} width={"100%"} height={"100%"} />
       </div>
 
-      <div className="w-50">
-        <span>{game.name}</span>
+      <div className="game-info col p-4">
+        <div className="d-flex justify-content-between">
+          <h3>{game.name}</h3>
 
-        <span className="d-block">${game.price}</span>
+          <button
+            className="bg-transparent border-0 w-25 mb-2 text-end"
+            onClick={() => toggleShowGame(false)}
+          >
+            <CloseIcon />
+          </button>
+        </div>
 
-        <span className="d-block">Quantity: {game.numInStock}</span>
+        <span className="d-block mb-4">${game.price}</span>
 
         <p>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -92,7 +95,9 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
           culpa qui officia deserunt mollit anim id est laborum.
         </p>
 
-        <div className="mb-5">
+        <span className="d-block mb-3">Qty: {game.numInStock}</span>
+
+        <div className="mb-3">
           <input
             type="number"
             min={0}
@@ -100,14 +105,12 @@ export const GameOverlay = ({ toggleShowGame, toggleShowCart }) => {
             value={quantity}
             onChange={(event) => setQuantity(event.target.value)}
           />
-          <button onClick={handleAddToCart} disabled={!maxQuantity}>
+          <button
+            className="success"
+            onClick={handleAddToCart}
+            disabled={!maxQuantity}
+          >
             Add to Cart
-          </button>
-        </div>
-
-        <div>
-          <button className="w-25" onClick={() => toggleShowGame(false)}>
-            <CloseIcon />
           </button>
         </div>
       </div>

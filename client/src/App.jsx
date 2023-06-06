@@ -41,16 +41,16 @@ const App = () => {
   const [showGame, toggleShowGame] = useState(false);
   const [showCart, toggleShowCart] = useState(false);
 
-  // useEffect(() => {
-  //   if (showGame || showCart) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "unset";
-  //   }
-  // }, [showGame, showCart]);
+  useEffect(() => {
+    if (showGame || showCart) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [showGame, showCart]);
 
   return (
-    <div className="container px-0">
+    <div className="container screen-height px-4">
       <Toaster />
 
       <Navbar

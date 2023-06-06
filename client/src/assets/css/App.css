@@ -3,9 +3,20 @@
   --gray: #393e46;
   --light-gray: #eeeeee;
   --primary: #ffd369;
+  --success: #77ba99;
   background-color: var(--background);
 }
 
+.success {
+  background-color: var(--success);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
 a,
 span,
 strong,
@@ -20,6 +31,21 @@ a:hover {
   color: var(--primary);
 }
 
-/* .screen-height {
+.screen-height {
   min-height: 100dvh;
-} */
+}
+
+input[type="checkbox"] {
+  accent-color: var(--primary);
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+input[type="checkbox"]:hover {
+  border: 2px solid var(--primary);
+  box-shadow: 0px 0px 5px 0px var(--primary);
+}
+
+input[type="checkbox"] + label {
+  cursor: pointer;
+}

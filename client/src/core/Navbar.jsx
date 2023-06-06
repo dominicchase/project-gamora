@@ -36,7 +36,7 @@ export const Navbar = ({ toggleShowCart }) => {
 
   return (
     <nav
-      className="navbar mb-4"
+      className="navbar px-4 mb-4"
       // style={{ border: "4px solid red", position: "sticky", top: 0 }}
     >
       <MobileNavbar />
@@ -81,7 +81,7 @@ export const Navbar = ({ toggleShowCart }) => {
           )} */}
 
         <button
-          className="bg-transparent border-0"
+          className="bg-transparent border-0 p-0"
           onClick={() => toggleShowCart((prevState) => !prevState)}
         >
           <CartIcon width={30} height={30} />

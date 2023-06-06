@@ -1,20 +1,17 @@
 .game-card-img {
   border-radius: 5px;
-  transition: transform 0.25s ease-in-out;
+  cursor: pointer;
+  transition: transform 0.15s ease-in-out;
 }
 
 .game-card-img:hover {
-  filter: brightness(0.5);
-  transform: scale(1.02);
+  /* filter: brightness(0.5); */
+  transform: scale(1.05);
 }
 
 .games-category {
   border-right: 2px solid var(--primary);
-  height: 100vh;
-  position: sticky;
-  top: 120px;
-}
-
-.checkbox {
-  transform: scale(1.5);
+  height: calc(100dvh - 100px);
+  position: sticky !important;
+  top: 100px;
 }

@@ -1,5 +1,8 @@
 .game {
   height: 100%;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-right: 2px solid var(--primary);
 }
 
 .game-overlay {
@@ -9,8 +12,13 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
-  cursor: pointer;
   /* overflow-y: scroll; */
+}
+
+.game-info {
+  background-color: var(--background);
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
 }

@@ -19,7 +19,7 @@ export const Catalog = ({ toggleShowGame }) => {
 
   return (
     <div className="d-flex justify-content-between">
-      <div className="games-category col-3 d-none d-md-block px-4">
+      <div className="games-category col-3 d-none d-md-block ps-4">
         <strong className="d-block mb-3 h5">Category</strong>
 
         {allCategories.map(({ categoryName, categoryEnum }) => (
@@ -32,13 +32,13 @@ export const Catalog = ({ toggleShowGame }) => {
               onChange={handleChangeCategory}
             />
 
-            <span>{categoryName}</span>
+            <label>{categoryName}</label>
           </div>
         ))}
       </div>
 
       {games.length ? (
-        <div className="row justify-content-center px-4">
+        <div className="row px-4 ">
           {games.map((game, index) => (
             <GameCard
               game={game}
