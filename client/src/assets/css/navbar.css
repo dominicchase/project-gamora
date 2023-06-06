@@ -24,20 +24,20 @@
 
 .drawer-overlay {
   background-color: var(--background);
-  border-right: 2px solid var(--primary);
-  height: 100%;
-  left: -45%;
+  border-bottom: 2px solid var(--primary);
+  height: 15%;
+  top: -15%;
+  left: 0%;
   overflow-y: none;
   position: fixed;
-  top: 0;
-  transform: translateX(0);
+  transform: translateY(0);
   transition: transform 0.4s ease-in-out;
-  width: 45%;
+  width: 100%;
   z-index: 2;
 }
 
 .drawer-overlay.open {
-  transform: translateX(100%);
+  transform: translateY(100%);
 }
 
 .backdrop {

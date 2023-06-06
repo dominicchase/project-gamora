@@ -22,10 +22,10 @@ export const SideDrawer = () => {
       </button>
 
       <div
-        className={`d-flex flex-column justify-content-center align-items-center py-3 ${drawerClassName}`}
+        className={`d-flex justify-content-evenly align-items-center py-3 ${drawerClassName}`}
       >
         <Link
-          className="h5 text-decoration-none mb-3"
+          className="h5 text-decoration-none"
           to="/admin"
           onClick={toggleDrawer}
         >

@@ -37,7 +37,7 @@ export const Catalog = ({ toggleShowGame }) => {
         ))}
       </div> */}
 
-      {/* <div className="p-0 catalog-games col">
+      <div className="p-0 catalog-games col">
         {games.length ? (
           <div className="row ps-4 justify-content-start">
             {games.map((game, index) => (
@@ -52,7 +52,7 @@ export const Catalog = ({ toggleShowGame }) => {
         ) : (
           <span>No Games</span>
         )}
-      </div> */}
+      </div>
     </div>
   );
 };
