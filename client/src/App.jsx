@@ -36,18 +36,18 @@ const App = () => {
       }
     };
     getCart();
-  });
+  }, []);
 
   const [showGame, toggleShowGame] = useState(false);
   const [showCart, toggleShowCart] = useState(false);
 
   useEffect(() => {
-    if (showGame || showCart) {
+    if (showCart) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
-  }, [showGame, showCart]);
+  }, [showCart]);
 
   return (
     <div className="container screen-height px-4">
@@ -70,12 +70,7 @@ const App = () => {
         <Route path="/order" element={<Order />} />
       </Routes>
 
-      {showGame && (
-        <GameOverlay
-          toggleShowGame={toggleShowGame}
-          toggleShowCart={toggleShowCart}
-        />
-      )}
+      {showGame && <GameOverlay toggleShowGame={toggleShowGame} />}
 
       {showCart && <CartOverlay toggleShowCart={toggleShowCart} />}
     </div>

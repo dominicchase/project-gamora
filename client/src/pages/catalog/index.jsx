@@ -15,6 +15,7 @@ export const Catalog = ({ toggleShowGame }) => {
   const handleClick = (game) => {
     dispatch(setGame(game));
     toggleShowGame((prevState) => !prevState);
+    document.body.style.overflow = "hidden";
   };
 
   return (
