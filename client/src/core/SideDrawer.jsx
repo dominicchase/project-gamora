@@ -20,9 +20,9 @@ export const SideDrawer = () => {
   const drawerClassName = isOpen ? "drawer-overlay open" : "drawer-overlay";
 
   return (
-    <div className="d-flex flex-column align-items-center">
+    <div>
       <button
-        className="bg-transparent border-0 drawer-btn"
+        className="d-flex flex-column justify-content-center bg-transparent border-0 drawer-btn p-0"
         onClick={toggleDrawer}
       >
         <div className="patty mb-2" />

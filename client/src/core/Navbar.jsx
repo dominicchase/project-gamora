@@ -23,22 +23,24 @@ export const Navbar = ({ toggleShowCart }) => {
   // };
 
   const MobileNavbar = () => (
-    <div className="col d-flex d-md-none">
-      <div className="col-3 d-flex flex-column justify-content-center align-items-start">
+    <div className="col d-flex d-md-none justify-content-between">
+      <div className="d-block my-auto">
         <SideDrawer />
       </div>
 
-      <div className="col d-flex d-md-none justify-content-center">
-        <img src={GamoraLogo} alt="" width={125} />
-      </div>
+      <img src={GamoraLogo} width={150} />
+
+      <button
+        className="bg-transparent border-0 p-0"
+        onClick={() => toggleShowCart((prevState) => !prevState)}
+      >
+        <CartIcon width={30} height={30} />
+      </button>
     </div>
   );
 
   return (
-    <nav
-      className="navbar px-4 mb-4"
-      // style={{ border: "4px solid red", position: "sticky", top: 0 }}
-    >
+    <nav className="navbar d-block my-auto px-4 mb-4">
       <MobileNavbar />
 
       <div className="col-3 d-none d-md-block">
@@ -81,7 +83,7 @@ export const Navbar = ({ toggleShowCart }) => {
           )} */}
 
         <button
-          className="bg-transparent border-0 p-0"
+          className="d-none d-md-block bg-transparent border-0 p-0"
           onClick={() => toggleShowCart((prevState) => !prevState)}
         >
           <CartIcon width={30} height={30} />

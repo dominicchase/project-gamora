@@ -13,9 +13,10 @@ export const Catalog = ({ toggleShowGame }) => {
   const { allCategories } = useGetCategories();
 
   const handleClick = (game) => {
+    document.body.style.overflow = "hidden";
+    console.log(document.body.style);
     dispatch(setGame(game));
     toggleShowGame((prevState) => !prevState);
-    document.body.style.overflow = "hidden";
   };
 
   return (
@@ -46,7 +47,7 @@ export const Catalog = ({ toggleShowGame }) => {
               handleClick={handleClick}
               lastGameRef={index === games.length - 1 ? lastGameRef : null}
               key={`game-${game._id}`}
-            ></GameCard>
+            />
           ))}
         </div>
       ) : (
