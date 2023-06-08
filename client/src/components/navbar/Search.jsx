@@ -7,7 +7,7 @@ export const Search = () => {
   const { search } = useSelector((state) => state.gameState);
 
   return (
-    <div className="search d-none d-lg-flex">
+    <div className="search d-none d-lg-flex align-items-center">
       <SearchIcon className="search-logo" width={30} height={30} />
 
       <input

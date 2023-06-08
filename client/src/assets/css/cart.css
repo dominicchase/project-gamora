@@ -6,12 +6,46 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.5);
   z-index: 1;
-  cursor: pointer;
+  /* cursor: pointer; */
   /* overflow-y: scroll; */
 }
 
-.cart-overlay-content {
-  background-color: #222831;
+.cart-games {
+  background-color: var(--background);
+  overflow-y: scroll;
+  width: 20%;
+}
+
+.cart-info {
+  background-color: var(--background);
+  width: 30%;
+}
+
+.game-img {
+  aspect-ratio: 2 / 3;
+}
+
+.remove-btn {
+  opacity: 0;
+  background: pink;
+  border: 1px solid red;
+  border-radius: 50%;
+  /* background: none; */
+  /* border: none; */
+  padding: 0.25rem;
+  position: absolute;
+}
+
+.remove-btn:hover {
+  opacity: 1;
+  top: 2%;
+  right: 3%;
+}
+
+.game-img:hover + .remove-btn {
+  opacity: 1;
+  top: 2%;
+  right: 3%;
 }

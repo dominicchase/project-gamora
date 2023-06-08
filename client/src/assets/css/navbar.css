@@ -16,11 +16,11 @@
 
 .search-field,
 .search-field:focus {
-  width: 150px !important;
   background-color: var(--light-gray);
   border: none;
-  outline: none;
-  padding-left: 2.5rem;
+  box-shadow: none !important;
+  padding-left: 2rem !important;
+  width: 125px !important;
 }
 
 .search-logo {

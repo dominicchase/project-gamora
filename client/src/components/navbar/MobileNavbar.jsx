@@ -14,7 +14,7 @@ export const MobileNavbar = ({ toggleShowCart }) => {
 
       <img src={GamoraLogo} width={120} />
 
-      <div className="col-3 d-flex">
+      <div className="col-3 d-flex justify-content-end">
         <AuthButton show={show} toggleShow={toggleShow} />
 
         <button

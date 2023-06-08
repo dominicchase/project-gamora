@@ -13,11 +13,14 @@
   background-color: var(--primary);
 }
 
+/* TODO: couple btn classes */
+
 .btn-secondary {
   border: none;
   background: linear-gradient(#85c7f2, var(--secondary));
   border-radius: 5px;
   color: var(--light-gray);
+  font-weight: bold;
   min-height: 44px;
   padding: 1rem 2rem;
   text-align: center;
@@ -30,6 +33,27 @@
   filter: brightness(0.8);
 }
 .btn-secondary:disabled {
+  filter: brightness(0.5);
+}
+
+.btn-tertiary {
+  border: none;
+  background-color: var(--light-gray);
+  border-radius: 5px;
+  color: var(--background);
+  font-weight: bold;
+  min-height: 44px;
+  padding: 1rem 2rem;
+  text-align: center;
+  width: 300px;
+}
+.btn-tertiary:hover {
+  filter: brightness(0.9);
+}
+.btn-tertiary:active {
+  filter: brightness(0.8);
+}
+.btn-tertiary:disabled {
   filter: brightness(0.5);
 }
 

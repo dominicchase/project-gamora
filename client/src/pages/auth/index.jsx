@@ -1,6 +1,10 @@
 import { useReducer } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
+import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
+import { setCart } from "../../store/reducers/CartReducer";
 import axios from "../../api/axios";
 
 const initialState = {
@@ -8,16 +12,37 @@ const initialState = {
   password: "",
 };
 
-export const Auth = ({ toggleIsNewUser, syncCart }) => {
+export const Auth = ({ toggleIsNewUser }) => {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
   const { state } = useLocation();
   const { setAuth } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
+  const { cart } = useSelector((state) => state.cartState);
 
   const [userState, userDispatch] = useReducer(
     (prevState, newState) => ({ ...prevState, ...newState }),
     initialState
   );
+
+  const syncCart = async (id) => {
+    let response;
+
+    if (cart.length) {
+      try {
+        response = await axiosPrivate.post(`/cart/add-to-cart/?id=${id}`, cart);
+        toast.success("Added to cart");
+      } catch (error) {
+        response = await axiosPrivate.get(`/cart/?id=${id}`);
+        toast.error(error.response.data.error);
+      }
+    } else {
+      response = await axiosPrivate.get(`/cart/?id=${id}`);
+    }
+
+    dispatch(setCart(response.data.games ?? []));
+  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
@@ -34,7 +59,9 @@ export const Auth = ({ toggleIsNewUser, syncCart }) => {
 
     syncCart(response.data.id);
 
-    navigate(state?.from ?? "/");
+    console.log("here");
+
+    navigate("/");
   };
 
   return (

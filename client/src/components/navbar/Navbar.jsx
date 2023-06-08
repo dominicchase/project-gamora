@@ -38,7 +38,7 @@ export const Navbar = ({ toggleShowCart }) => {
           <AuthButton show={show} toggleShow={toggleShow} />
 
           <button
-            className="d-none d-md-block bg-transparent border-0"
+            className="d-none d-md-block bg-transparent border-0 p-0"
             onClick={() => toggleShowCart((prevState) => !prevState)}
           >
             <CartIcon width={30} height={30} />

@@ -49,7 +49,19 @@ export const CartOverlay = ({ toggleShowCart }) => {
     }
   };
 
+  const handleOpenCart = () => {
+    if (id) {
+      toggleShowCart(false);
+      navigate("/cart");
+    } else {
+      toggleShowCart(false);
+      navigate("/auth", { state: { from: "/cart" } });
+    }
+  };
+
   const handleCheckout = () => {
+    // TODO: handle push to payment
+
     if (id) {
       toggleShowCart(false);
       navigate("/cart");
@@ -61,29 +73,48 @@ export const CartOverlay = ({ toggleShowCart }) => {
 
   return (
     <div className="cart-overlay d-flex justify-content-end">
-      <div className="col-3 cart-overlay-content">
+      <div className="cart-games pe-3">
         {cart?.map((cartGame) => (
-          <article className="mb-2" key={`cart-game-${cartGame.game._id}`}>
-            <button onClick={() => removeFromCart(cartGame)}>X</button>
-            <img className="w-100" src={cartGame.game.image} alt="" />
+          <article
+            className="d-flex justify-content-end position-relative mb-2"
+            key={`cart-game-${cartGame.game._id}`}
+          >
+            <img className="game-img" src={cartGame.game.image} width="100%" />
+
+            <button
+              className="remove-btn"
+              onClick={() => removeFromCart(cartGame)}
+            >
+              <CloseIcon fill="red" />
+            </button>
           </article>
         ))}
       </div>
 
-      <div className="px-5 py-3 col-4 cart-overlay-content">
-        <div id="header" className="d-flex justify-content-between">
+      <div className="cart-info py-3 pe-3">
+        <div className="d-flex justify-content-between">
           <h3 className="span">Cart ({cart?.length ?? 0})</h3>
 
-          <button onClick={() => toggleShowCart(false)}>
+          <button className="btn-no-bg" onClick={() => toggleShowCart(false)}>
             <CloseIcon />
           </button>
         </div>
 
-        <span className="span">Total: ${total}</span>
+        <span className="d-block mb-4">Total: ${total}</span>
 
-        <div id="footer" className="d-flex flex-column">
-          <button onClick={handleCheckout}>Checkout</button>
-        </div>
+        <button
+          className="d-block btn-tertiary mb-3 w-100"
+          onClick={handleOpenCart}
+        >
+          Open Cart
+        </button>
+
+        <button
+          className="d-block btn-secondary mb-3 w-100"
+          onClick={handleCheckout}
+        >
+          Checkout
+        </button>
       </div>
     </div>
   );
