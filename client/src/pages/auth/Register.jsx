@@ -1,5 +1,6 @@
 import { useReducer } from "react";
 import axios from "../../api/axios";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const initialState = {
   email: "",
@@ -8,6 +9,9 @@ const initialState = {
 };
 
 export const Register = ({ toggleIsNewUser, syncCart }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   const [userState, userDispatch] = useReducer(
     (prevState, newState) => ({ ...prevState, ...newState }),
     initialState
@@ -20,8 +24,10 @@ export const Register = ({ toggleIsNewUser, syncCart }) => {
 
     const response = await axios.post("/user/register", { email, password });
 
+    // TODO: use toasts
+
     if (response.data) {
-      toggleIsNewUser(false);
+      navigate("/");
     }
   };
 
@@ -32,41 +38,56 @@ export const Register = ({ toggleIsNewUser, syncCart }) => {
 
   return (
     <form>
-      <fieldset className="mb-3">
-        <label className="d-block mb-2">Email</label>
-        <input type="text" name="email" value={email} onChange={handleChange} />
+      <fieldset className="mb-4">
+        <input
+          className="d-block mx-auto"
+          name="email"
+          value={email}
+          onChange={handleChange}
+          type="text"
+          placeholder="Email"
+        />
       </fieldset>
 
-      <fieldset className="mb-3">
-        <label className="d-block mb-2">Password</label>
+      <fieldset className="mb-4">
         <input
-          type="text"
+          className="d-block mx-auto"
           name="password"
           value={password}
           onChange={handleChange}
+          type="password"
+          placeholder="Password"
         />
       </fieldset>
 
-      <fieldset className="mb-3">
-        <label className="d-block mb-2">Re-enter password</label>
+      <fieldset className="mb-5">
         <input
-          type="text"
+          className="d-block mx-auto"
           name="passwordConfirmation"
           value={passwordConfirmation}
           onChange={handleChange}
+          type="password"
+          placeholder="Re-enter Password"
         />
       </fieldset>
 
-      <button className="mb-3" type="submit" onClick={handleRegister}>
+      <button
+        className="d-block btn-secondary mx-auto mb-3"
+        type="submit"
+        onClick={handleRegister}
+      >
         Register
       </button>
 
-      <div>
-        <span className="d-block mb-3">Already have an account?</span>
+      <div className="text-center">
+        <span>Already have an account?</span>
 
         <button
+          className="btn-no-bg"
+          onClick={() =>
+            navigate("/auth", { state: { from: location.pathname } })
+          }
           type="button"
-          onClick={() => toggleIsNewUser((prevState) => !prevState)}
         >
           Sign in
         </button>

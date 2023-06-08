@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { useGetGames } from "./useGetGames";
 import { useGetCategories } from "../../hooks/useGetCategories";
-import { GameCard } from "../../core/GameCard";
+import { GameCard } from "../../components/GameCard";
 import { setGame } from "../../store/reducers/GameReducer";
 import "../../assets/css/games.css";
 

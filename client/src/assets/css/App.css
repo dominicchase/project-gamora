@@ -17,10 +17,11 @@
   border: none;
   background: linear-gradient(#85c7f2, var(--secondary));
   border-radius: 5px;
+  color: var(--light-gray);
   min-height: 44px;
   padding: 1rem 2rem;
   text-align: center;
-  color: var(--light-gray);
+  width: 300px;
 }
 .btn-secondary:hover {
   filter: brightness(0.9);
@@ -60,6 +61,18 @@ a:hover {
   color: var(--primary);
 }
 
+.btn-no-bg {
+  background: none;
+  border: none;
+  color: var(--light-gray);
+  padding: none;
+}
+.btn-no-bg:active,
+.btn-no-bg:focus,
+.btn-no-bg:hover {
+  color: var(--primary);
+}
+
 .screen-height {
   min-height: 100dvh;
 }
@@ -77,4 +90,28 @@ input[type="checkbox"]:hover {
 
 input[type="checkbox"] + label {
   cursor: pointer;
+}
+
+input[type="text"] {
+  border: none;
+  border-radius: 5px;
+  height: 44px;
+  padding-left: 1rem;
+  width: 300px;
+}
+input[type="text"]:focus {
+  box-shadow: 0px 0px 10px 1px var(--primary);
+  outline: none;
+}
+
+input[type="password"] {
+  border: none;
+  border-radius: 5px;
+  height: 44px;
+  width: 300px;
+  padding-left: 1rem;
+}
+input[type="password"]:focus {
+  box-shadow: 0px 0px 10px 1px var(--primary);
+  outline: none;
 }

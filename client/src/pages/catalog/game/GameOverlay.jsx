@@ -18,9 +18,9 @@ export const GameOverlay = ({ showGame, toggleShowGame }) => {
   const MobileGameInfo = () => {
     return (
       <div className="d-lg-none py-4">
-        <img className="mobile-game d-block mx-auto col-9" src={game.image} />
+        <img className="mobile-game d-block mx-auto col-10" src={game.image} />
 
-        <div className="mobile-game-info mx-auto col-9 p-4">
+        <div className="mobile-game-info mx-auto col-10 p-4">
           <GameInfo toggleShowGame={toggleShowGame} />
         </div>
       </div>

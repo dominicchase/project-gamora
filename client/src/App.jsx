@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Toaster } from "react-hot-toast";
 import useAuth from "./hooks/useAuth";
 import { useAxiosPrivate } from "./hooks/useAxiosPrivate";
-import { Navbar } from "./core/Navbar";
+import { Navbar } from "./components/navbar/Navbar";
 import { Admin } from "./pages/admin";
 import { Catalog } from "./pages/catalog";
 import { Cart } from "./pages/cart";
@@ -16,6 +16,7 @@ import { Order } from "./pages/Order";
 import { setCart } from "./store/reducers/CartReducer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/css/App.css";
+import { Register } from "./pages/auth/Register";
 
 const App = () => {
   useIsAuthenticated();
@@ -55,6 +56,8 @@ const App = () => {
         <Route path="/" element={<Catalog toggleShowGame={toggleShowGame} />} />
 
         <Route path="/auth" element={<Auth />} />
+
+        <Route path="/auth/register" element={<Register />} />
 
         <Route path="/admin" element={<Admin />} />
 

@@ -22,7 +22,7 @@ export const SideDrawer = () => {
   return (
     <div>
       <button
-        className="d-flex flex-column justify-content-center bg-transparent border-0 drawer-btn p-0"
+        className="bg-transparent border-0 m-0 d-block drawer-btn"
         onClick={toggleDrawer}
       >
         <div className="patty mb-2" />

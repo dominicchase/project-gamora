@@ -4,12 +4,12 @@ import { UploadForm } from "./UploadForm";
 import { ReactComponent as EditIcon } from "../../assets/svg/edit.svg";
 import { ReactComponent as RemoveIcon } from "../../assets/svg/remove.svg";
 
-import { Modal } from "../../core/Modal";
+import { Modal } from "../../components/Modal";
 
 import axios from "../../api/axios";
 import { useGetGames } from "../catalog/useGetGames";
 
-import { GameCard } from "../../core/GameCard";
+import { GameCard } from "../../components/GameCard";
 
 export const Admin = () => {
   const [show, toggleShow] = useState(false);

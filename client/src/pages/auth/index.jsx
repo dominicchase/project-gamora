@@ -1,39 +1,83 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import toast from "react-hot-toast";
-import { setCart } from "../../store/reducers/CartReducer";
-import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
-import { Register } from "./Register";
-import { Login } from "./Login";
+import { useReducer } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
+import axios from "../../api/axios";
 
-export const Auth = () => {
-  const dispatch = useDispatch();
-  const axiosPrivate = useAxiosPrivate();
+const initialState = {
+  email: "",
+  password: "",
+};
 
-  const [isNewUser, toggleIsNewUser] = useState(false);
-  const { cart } = useSelector((state) => state.cartState);
+export const Auth = ({ toggleIsNewUser, syncCart }) => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { state } = useLocation();
+  const { setAuth } = useAuth();
 
-  const syncCart = async (id) => {
-    let response;
+  const [userState, userDispatch] = useReducer(
+    (prevState, newState) => ({ ...prevState, ...newState }),
+    initialState
+  );
 
-    if (cart.length) {
-      try {
-        response = await axiosPrivate.post(`/cart/add-to-cart/?id=${id}`, cart);
-        toast.success("Added to cart");
-      } catch (error) {
-        response = await axiosPrivate.get(`/cart/?id=${id}`);
-        toast.error(error.response.data.error);
-      }
-    } else {
-      response = await axiosPrivate.get(`/cart/?id=${id}`);
-    }
+  const handleLogin = async (event) => {
+    event.preventDefault();
 
-    dispatch(setCart(response.data.games ?? []));
+    const response = await axios.post("/user/login", userState, {
+      withCredentials: true,
+    });
+
+    await setAuth({
+      id: response.data.id,
+      accessToken: response.data.accessToken,
+      ...(response.data.isAdmin && { isAdmin: response.data.isAdmin }),
+    });
+
+    syncCart(response.data.id);
+
+    navigate(state?.from ?? "/");
   };
 
-  return isNewUser ? (
-    <Register toggleIsNewUser={toggleIsNewUser} syncCart={syncCart} />
-  ) : (
-    <Login toggleIsNewUser={toggleIsNewUser} syncCart={syncCart} />
+  return (
+    <form onSubmit={handleLogin}>
+      <fieldset>
+        <input
+          className="d-block mx-auto mb-4"
+          onChange={(event) =>
+            userDispatch({ ...userState, email: event.target.value })
+          }
+          type="text"
+          placeholder="Email"
+        />
+      </fieldset>
+
+      <fieldset className="mb-5">
+        <input
+          className="d-block mx-auto"
+          onChange={(event) =>
+            userDispatch({ ...userState, password: event.target.value })
+          }
+          type="password"
+          placeholder="Password"
+        />
+      </fieldset>
+
+      <button type="submit" className="d-block btn-secondary mx-auto mb-3">
+        Login
+      </button>
+
+      <div className="text-center">
+        <span>New to Gamora?</span>
+
+        <button
+          className="btn-no-bg"
+          onClick={() =>
+            navigate("/auth/register", { state: { from: location.pathname } })
+          }
+          type="button"
+        >
+          Register
+        </button>
+      </div>
+    </form>
   );
 };
