@@ -7,14 +7,6 @@ import "../../../assets/css/Game.css";
 export const GameOverlay = ({ showGame, toggleShowGame }) => {
   const { game } = useSelector((state) => state.gameState);
 
-  useEffect(() => {
-    if (showGame) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-  }, [showGame]);
-
   const MobileGameInfo = () => {
     return (
       <div className="d-lg-none py-4">

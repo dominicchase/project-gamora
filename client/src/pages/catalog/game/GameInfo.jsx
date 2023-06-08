@@ -82,11 +82,11 @@ export const GameInfo = ({ toggleShowGame }) => {
 
       <span className="d-block mb-4">${game.price}</span>
 
-      <p className="mb-4">{description}</p>
+      <p className="mb-5">{description}</p>
 
-      <div className="mb-3">
+      <div>
         <button
-          className="btn-secondary"
+          className="btn-secondary d-block mx-auto p-3 w-25"
           onClick={handleAddToCart}
           disabled={!maxQuantity}
         >

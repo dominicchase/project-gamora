@@ -39,12 +39,12 @@ const App = () => {
   const [showCart, toggleShowCart] = useState(false);
 
   useEffect(() => {
-    if (showCart) {
+    if (showGame || showCart) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
-  }, [showCart]);
+  }, [showGame, showCart]);
 
   return (
     <div className="container screen-height px-4">

@@ -13,8 +13,6 @@ export const Catalog = ({ toggleShowGame }) => {
   const { allCategories } = useGetCategories();
 
   const handleClick = (game) => {
-    document.body.style.overflow = "hidden";
-    console.log(document.body.style);
     dispatch(setGame(game));
     toggleShowGame((prevState) => !prevState);
   };
