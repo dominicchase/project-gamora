@@ -26,17 +26,6 @@ const App = () => {
   const { id } = useAuth();
   const axiosPrivate = useAxiosPrivate();
 
-  // TODO: extract to custom hook
-  useEffect(() => {
-    const getCart = async () => {
-      if (id) {
-        const response = await axiosPrivate.get(`/cart/?id=${id}`);
-        dispatch(setCart(response.data.games));
-      }
-    };
-    getCart();
-  }, []);
-
   const [showGame, toggleShowGame] = useState(false);
   const [showCart, toggleShowCart] = useState(false);
 
@@ -66,15 +55,13 @@ const App = () => {
         <Route path="/order" element={<Order />} />
       </Routes>
 
-      {showGame && (
-        <GameOverlay showGame={showGame} toggleShowGame={toggleShowGame} />
-      )}
+      {showGame && <GameOverlay toggleShowGame={toggleShowGame} />}
 
       <Drawer
         open={showCart}
         onClose={() => toggleShowCart((prevState) => !prevState)}
         direction="right"
-        className="w-100 w-lg-50 cart-drawer overflow-auto"
+        className="w-100 cart-drawer overflow-auto"
       >
         <CartOverlay toggleShowCart={toggleShowCart} />
       </Drawer>

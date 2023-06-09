@@ -165,10 +165,17 @@ input[type="password"]:focus {
 
 .cart-drawer {
   background-color: var(--background) !important;
-  width: 100%;
   @media only screen and (min-width: 768px) {
     width: 50% !important;
   }
+}
+
+.left-border {
+  border-left: 2px solid var(--primary);
+}
+
+.bottom-border {
+  border-bottom: 2px solid var(--primary);
 }
 
 .game-img {

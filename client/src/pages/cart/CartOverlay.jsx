@@ -69,9 +69,11 @@ export const CartOverlay = ({ toggleShowCart }) => {
     }
   };
 
+  const centerGameInfo = !cart.length ? "justify-content-center" : "";
+
   return (
-    <div className="d-flex">
-      {!!cart.length && (
+    <div className={`d-flex ${centerGameInfo}`}>
+      {cart.length && (
         <div className="cart-games col-5">
           {cart?.map((cartGame) => (
             <article
@@ -95,7 +97,7 @@ export const CartOverlay = ({ toggleShowCart }) => {
         </div>
       )}
 
-      <div className="cart-info px-5 py-3 col-7">
+      <div className="cart-info px-4 py-3 col-7">
         <div className="d-flex justify-content-between">
           <h3 className="span">Cart ({cart?.length ?? 0})</h3>
 

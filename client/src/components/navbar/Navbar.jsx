@@ -11,7 +11,7 @@ export const Navbar = ({ toggleShowCart }) => {
   const [show, toggleShow] = useState(false);
 
   return (
-    <nav className="navbar px-4 mb-4">
+    <nav className="navbar px-4">
       <MobileNavbar toggleShowCart={toggleShowCart} />
 
       <div className="d-none d-md-flex justify-content-between w-100">

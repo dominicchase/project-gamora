@@ -43,6 +43,7 @@ export const useGetGames = () => {
 
     const handleGetGames = async () => {
       const { data } = await getGames({ page, size, categories, search });
+
       if (page === 0) {
         setGames(data.games);
       } else {

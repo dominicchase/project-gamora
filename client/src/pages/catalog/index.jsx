@@ -17,10 +17,10 @@ export const Catalog = ({ toggleShowGame }) => {
     toggleShowGame((prevState) => !prevState);
   };
 
-  return (
+  return games.length ? (
     <div className="d-flex justify-content-between">
       <div className="games-category col-3 d-none d-md-block ps-4">
-        <strong className="d-block mb-3 h5">Category</strong>
+        <strong className="d-block mb-3 mt-4 h5">Category</strong>
 
         {allCategories.map(({ categoryName, categoryEnum }) => (
           <div className="mb-2" key={`category-${categoryEnum}`}>
@@ -37,20 +37,18 @@ export const Catalog = ({ toggleShowGame }) => {
         ))}
       </div>
 
-      {games.length ? (
-        <div className="row px-4 ">
-          {games.map((game, index) => (
-            <GameCard
-              game={game}
-              handleClick={handleClick}
-              lastGameRef={index === games.length - 1 ? lastGameRef : null}
-              key={`game-${game._id}`}
-            />
-          ))}
-        </div>
-      ) : (
-        <span>No Games</span>
-      )}
+      <div className="row px-4 pt-4">
+        {games.map((game, index) => (
+          <GameCard
+            game={game}
+            handleClick={handleClick}
+            lastGameRef={index === games.length - 1 ? lastGameRef : null}
+            key={`game-${game._id}`}
+          />
+        ))}
+      </div>
     </div>
+  ) : (
+    <span className="d-block col ms-4 mt-4">No Games</span>
   );
 };

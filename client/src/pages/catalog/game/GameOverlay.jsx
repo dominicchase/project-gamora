@@ -1,10 +1,9 @@
-import { useEffect } from "react";
 import { useSelector } from "react-redux";
 
 import { GameInfo } from "./GameInfo";
 import "../../../assets/css/Game.css";
 
-export const GameOverlay = ({ showGame, toggleShowGame }) => {
+export const GameOverlay = ({ toggleShowGame }) => {
   const { game } = useSelector((state) => state.gameState);
 
   const MobileGameInfo = () => {

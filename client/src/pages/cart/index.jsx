@@ -3,11 +3,22 @@ import useAuth from "../../hooks/useAuth";
 import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
 import { setCart } from "../../store/reducers/CartReducer";
 import { toast } from "react-hot-toast";
+import { useEffect } from "react";
 
 export const Cart = () => {
   const dispatch = useDispatch();
   const { id } = useAuth();
   const axiosPrivate = useAxiosPrivate();
+
+  useEffect(() => {
+    const getCart = async () => {
+      if (id) {
+        const response = await axiosPrivate.get(`/cart/?id=${id}`);
+        dispatch(setCart(response.data.games));
+      }
+    };
+    getCart();
+  }, []);
 
   const { cart } = useSelector((state) => state.cartState);
 
@@ -37,10 +48,6 @@ export const Cart = () => {
       const cartComplement = cart.filter(
         (cartGame) => cartGame._id !== cartGameId
       );
-
-      console.log("here");
-
-      console.log(cartComplement);
     }
   };
 
@@ -53,45 +60,65 @@ export const Cart = () => {
     window.location.href = response.data.url;
   };
 
+  const description =
+    "Persona 5 is a fantasy based on reality which follows a group of troubled high school students: the protagonist and a collection of compatriots he meets along the way. ";
+
   return (
-    <div>
+    <>
       {cart.length ? (
         cart.map((cartGame) => (
           <div
-            className="d-flex px-5 pb-5 mb-5 border-bottom"
+            className="d-flex gap-4 bottom-border px-4 py-4"
             key={`cart-game-${cartGame.game._id}`}
           >
-            <div className="col-3 me-4">
-              <img src={cartGame.game.image} width={"100%"} alt="" />
-            </div>
+            <img
+              className="col-5 col-md-3 col-lg-2 game-img"
+              src={cartGame.game.image}
+            />
 
-            <div>
-              <span className="d-block mb-3">{cartGame.game.name}</span>
+            <div className="col">
+              <div className="d-flex justify-content-between mb-3">
+                <span className="h5">{cartGame.game.name}</span>
 
-              <span className="d-block mb-3">${cartGame.game.price}</span>
+                <span className="h5 d-none d-md-block">
+                  {cartGame.game.price}
+                </span>
+              </div>
+
+              <span className="h6 d-block d-md-none mb-3">
+                {cartGame.game.price}
+              </span>
+
+              <span className="w-75 d-none d-md-block fw-light mb-4">
+                {description}
+              </span>
 
               <span className="d-block mb-3">Qty: {cartGame.quantity}</span>
 
               <button
-                className="px-4"
-                onClick={() => dispatch(removeFromCart(cartGame._id))}
+                className="h6 btn-no-bg p-0"
+                onClick={() => removeFromCart(cartGame._id)}
               >
-                X
+                Remove
               </button>
             </div>
           </div>
         ))
       ) : (
-        <span>No cart items</span>
+        <span className="d-block ms-4 mt-4">No cart items</span>
       )}
 
-      <div className="d-flex flex-column align-items-end">
-        <strong className="d-block mb-3">
-          Subtotal ({numberOfGames} games): ${subtotal}
-        </strong>
+      {cart.length && (
+        <div className="d-flex flex-column align-items-end pt-4 pb-5">
+          <strong className="d-block mb-3">
+            Subtotal ({numberOfGames}): ${subtotal.toFixed(2)}
+          </strong>
 
-        <button onClick={handlePayment}>Proceed to Payment</button>
-      </div>
-    </div>
+          <button className="btn-secondary" onClick={handlePayment}>
+            Proceed to Payment
+          </button>
+        </div>
+      )}
+    </>
   );
 };
