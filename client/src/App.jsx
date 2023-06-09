@@ -17,6 +17,8 @@ import { setCart } from "./store/reducers/CartReducer";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./assets/css/App.css";
 import { Register } from "./pages/auth/Register";
+import Drawer from "react-modern-drawer";
+import "react-modern-drawer/dist/index.css";
 
 const App = () => {
   useIsAuthenticated();
@@ -49,9 +51,7 @@ const App = () => {
   return (
     <div className="container screen-height px-4">
       <Toaster />
-
       <Navbar toggleShowCart={toggleShowCart} />
-
       <Routes>
         <Route path="/" element={<Catalog toggleShowGame={toggleShowGame} />} />
 
@@ -70,7 +70,14 @@ const App = () => {
         <GameOverlay showGame={showGame} toggleShowGame={toggleShowGame} />
       )}
 
-      {showCart && <CartOverlay toggleShowCart={toggleShowCart} />}
+      <Drawer
+        open={showCart}
+        onClose={() => toggleShowCart((prevState) => !prevState)}
+        direction="right"
+        className="w-100 w-lg-50 cart-drawer overflow-auto"
+      >
+        <CartOverlay toggleShowCart={toggleShowCart} />
+      </Drawer>
     </div>
   );
 };

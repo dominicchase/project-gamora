@@ -45,6 +45,7 @@
   min-height: 44px;
   padding: 1rem 2rem;
   text-align: center;
+  white-space: nowrap;
   width: 300px;
 }
 .btn-tertiary:hover {
@@ -139,3 +140,52 @@ input[type="password"]:focus {
   box-shadow: 0px 0px 10px 1px var(--primary);
   outline: none;
 }
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #222831;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #888;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.cart-drawer {
+  background-color: var(--background) !important;
+  width: 100%;
+  @media only screen and (min-width: 768px) {
+    width: 50% !important;
+  }
+}
+
+.game-img {
+  aspect-ratio: 2 / 3;
+}
+
+/* Extra small devices (phones, 600px and down) */
+/* @media only screen and (max-width: 600px) {...} */
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+/* @media only screen and (min-width: 600px) {...} */
+
+/* Medium devices (landscape tablets, 768px and up) */
+/* @media only screen and (min-width: 768px) {...} */
+
+/* Large devices (laptops/desktops, 992px and up) */
+/* @media only screen and (min-width: 992px) {...} */
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+/* @media only screen and (min-width: 1200px) {...} */

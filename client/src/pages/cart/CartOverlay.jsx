@@ -23,8 +23,6 @@ export const CartOverlay = ({ toggleShowCart }) => {
     )
     ?.toFixed(2);
 
-  console.log({ cart });
-
   const removeFromCart = async (cartGame) => {
     if (id) {
       try {
@@ -72,26 +70,32 @@ export const CartOverlay = ({ toggleShowCart }) => {
   };
 
   return (
-    <div className="cart-overlay d-flex justify-content-end">
-      <div className="cart-games pe-3">
-        {cart?.map((cartGame) => (
-          <article
-            className="d-flex justify-content-end position-relative mb-2"
-            key={`cart-game-${cartGame.game._id}`}
-          >
-            <img className="game-img" src={cartGame.game.image} width="100%" />
-
-            <button
-              className="remove-btn"
-              onClick={() => removeFromCart(cartGame)}
+    <div className="d-flex">
+      {!!cart.length && (
+        <div className="cart-games col-5">
+          {cart?.map((cartGame) => (
+            <article
+              className="position-relative"
+              key={`cart-game-${cartGame.game._id}`}
             >
-              <CloseIcon fill="red" />
-            </button>
-          </article>
-        ))}
-      </div>
+              <img
+                className="game-img"
+                src={cartGame.game.image}
+                width="100%"
+              />
 
-      <div className="cart-info py-3 pe-3">
+              <button
+                className="remove-btn"
+                onClick={() => removeFromCart(cartGame)}
+              >
+                <CloseIcon fill="red" />
+              </button>
+            </article>
+          ))}
+        </div>
+      )}
+
+      <div className="cart-info px-5 py-3 col-7">
         <div className="d-flex justify-content-between">
           <h3 className="span">Cart ({cart?.length ?? 0})</h3>
 
@@ -112,6 +116,7 @@ export const CartOverlay = ({ toggleShowCart }) => {
         <button
           className="d-block btn-secondary mb-3 w-100"
           onClick={handleCheckout}
+          disabled={!cart.length}
         >
           Checkout
         </button>

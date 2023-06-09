@@ -1,30 +1,13 @@
-.cart-overlay {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1;
-  /* cursor: pointer; */
-  /* overflow-y: scroll; */
-}
-
 .cart-games {
   background-color: var(--background);
-  overflow-y: scroll;
-  width: 20%;
+  border-right: 2px solid var(--primary);
 }
 
 .cart-info {
   background-color: var(--background);
-  width: 30%;
-}
-
-.game-img {
-  aspect-ratio: 2 / 3;
+  height: 100%;
+  position: sticky;
+  top: 0;
 }
 
 .remove-btn {
@@ -32,8 +15,6 @@
   background: pink;
   border: 1px solid red;
   border-radius: 50%;
-  /* background: none; */
-  /* border: none; */
   padding: 0.25rem;
   position: absolute;
 }

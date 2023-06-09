@@ -12,7 +12,7 @@ export const Navbar = ({ toggleShowCart }) => {
 
   return (
     <nav className="navbar px-4 mb-4">
-      <MobileNavbar />
+      <MobileNavbar toggleShowCart={toggleShowCart} />
 
       <div className="d-none d-md-flex justify-content-between w-100">
         <div className="col-3">
