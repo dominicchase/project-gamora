@@ -59,8 +59,6 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
         formData
       );
 
-      console.log(response);
-
       resetGamesData();
       toggleShow(false);
     } else {
@@ -100,15 +98,17 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
 
   return (
     <form className="d-flex flex-column gap-3">
-      <fieldset className="d-flex flex-column">
-        <label className="text-muted mb-2">Name</label>
-
-        <input type="text" name="name" value={name} onChange={handleChange} />
+      <fieldset className="mb-3">
+        <input
+          type="text"
+          name="name"
+          value={name}
+          onChange={handleChange}
+          placeholder="Name"
+        />
       </fieldset>
 
-      <fieldset className="d-flex flex-column">
-        <label className="text-muted mb-2">Category</label>
-
+      <fieldset className="d-flex gap-3 mb-3">
         <select name="category" onChange={handleChange}>
           <option value="INIT">Category</option>
 
@@ -122,36 +122,35 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
             </option>
           ))}
         </select>
-      </fieldset>
 
-      {!showCategoryFields && (
-        <button
-          type="button"
-          onClick={() => toggleShowCategoryFields((prevState) => !prevState)}
-        >
-          Add Category
-        </button>
-      )}
+        {!showCategoryFields && (
+          <button
+            className="btn-tertiary"
+            type="button"
+            onClick={() => toggleShowCategoryFields((prevState) => !prevState)}
+          >
+            Add Category
+          </button>
+        )}
+      </fieldset>
 
       {showCategoryFields && (
         <form className="d-flex gap-3">
           <fieldset className="d-flex flex-column">
-            <label className="text-muted mb-2">Category Name</label>
-
             <input
               type="text"
               value={categoryName}
               onChange={(event) => setCategoryName(event.target.value)}
+              placeholder="Category Name"
             />
           </fieldset>
 
           <fieldset className="d-flex flex-column">
-            <label className="text-muted mb-2">Category Enum</label>
-
             <input
               type="text"
               value={categoryEnum}
               onChange={(event) => setCategoryEnum(event.target.value)}
+              placeholder="Category Enum"
             />
           </fieldset>
 
@@ -161,44 +160,52 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
         </form>
       )}
 
-      <fieldset className="d-flex flex-column">
-        <label className="text-muted mb-2">Price</label>
-
-        <input type="text" name="price" value={price} onChange={handleChange} />
+      <fieldset className="mb-3">
+        <input
+          type="text"
+          name="price"
+          value={price}
+          onChange={handleChange}
+          placeholder="Price"
+        />
       </fieldset>
 
-      <fieldset className="d-flex flex-column">
-        <label className="text-muted mb-2">Image</label>
+      <fieldset className="mb-3">
+        <label className="d-block h6 mb-3">Image</label>
 
         <input
-          className={`${image?.file && "mb-3"}`}
+          className={`d-block ${image?.file && "mb-4"}`}
           type="file"
           accept="jpg jpeg png"
           onChange={handleFileChange}
         />
+
         {image?.file && (
           <img width={200} height={300} src={image?.data} alt="" />
         )}
       </fieldset>
 
       <fieldset className="d-flex flex-column mb-5">
-        <label className="text-muted mb-2">Quantity</label>
-
         <input
           type="text"
           name="numInStock"
           value={numInStock}
           onChange={handleChange}
+          placeholder="Quantity"
         />
       </fieldset>
 
-      <button
-        className="w-25 primary-btn"
-        onClick={handleUpload}
-        disabled={!image}
-      >
-        Upload
-      </button>
+      <div className="d-flex gap-3">
+        <button
+          className="btn-secondary"
+          onClick={handleUpload}
+          disabled={!image}
+        >
+          Upload
+        </button>
+
+        <button className="delete-btn mb-4">Delete</button>
+      </div>
     </form>
   );
 };

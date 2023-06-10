@@ -1,15 +1,13 @@
 import { useState } from "react";
 
 import { UploadForm } from "./UploadForm";
-import { ReactComponent as EditIcon } from "../../assets/svg/edit.svg";
-import { ReactComponent as RemoveIcon } from "../../assets/svg/remove.svg";
 
 import { Modal } from "../../components/Modal";
 
 import axios from "../../api/axios";
 import { useGetGames } from "../catalog/useGetGames";
 
-import { GameCard } from "../../components/GameCard";
+import "../../assets/css/admin.css";
 
 export const Admin = () => {
   const [show, toggleShow] = useState(false);
@@ -39,38 +37,28 @@ export const Admin = () => {
     toggleShow((prevState) => !prevState);
   };
 
+  // <GameCard
+  //           game={game}
+  //           lastGameRef={lastGameRef}
+  //           key={`game-${game._id}`}
+  //         />
+
   return (
-    <>
-      <div className="row justify-content-center">
-        <article className="col-sm flex-grow-0 mb-4">
-          <button className="add-game-btn" onClick={handleNewGame}>
-            +
+    <div className="mt-4 px-4">
+      <div className="row justify-content-start">
+        <div className="col-3 mb-4" onClick={handleNewGame}>
+          <button className="h1 new-game-btn m-0">+</button>
+        </div>
+
+        {games.map((game) => (
+          <button
+            className="col-3 mb-4 bg-transparent border-0"
+            onClick={() => handleEditGame(game)}
+            key={game._id}
+          >
+            <img className="admin-game-img" src={game.image} width="100%" />
           </button>
-        </article>
-
-        {/* {games.map((game) => (
-          <>
-            <button
-              // className="edit-btn"
-              onClick={() => handleEditGame(game)}
-            >
-              <EditIcon />
-            </button>
-
-            <button
-              // className="remove-btn"
-              onClick={() => handleDeleteGame(game)}
-            >
-              <RemoveIcon />
-            </button>
-
-            <GameCard
-              game={game}
-              lastGameRef={lastGameRef}
-              key={`game-${game._id}`}
-            />
-          </>
-        ))} */}
+        ))}
       </div>
 
       <Modal show={show} toggleShow={toggleShow}>
@@ -80,6 +68,19 @@ export const Admin = () => {
           game={game}
         />
       </Modal>
-    </>
+    </div>
   );
 };
+
+{
+  /* <button className="edit-btn" onClick={() => handleEditGame(game)}>
+              <EditIcon />
+            </button>
+
+            <button
+              className="remove-btn"
+              onClick={() => handleDeleteGame(game)}
+            >
+              <RemoveIcon />
+            </button> */
+}
