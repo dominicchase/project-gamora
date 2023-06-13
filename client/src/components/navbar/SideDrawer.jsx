@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 
 export const SideDrawer = () => {
+  const { auth } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
   // TODO: find better approach
@@ -33,13 +35,15 @@ export const SideDrawer = () => {
       <div
         className={`d-flex justify-content-evenly align-items-center py-3 ${drawerClassName}`}
       >
-        <Link
-          className="h5 text-decoration-none"
-          to="/admin"
-          onClick={toggleDrawer}
-        >
-          Admin
-        </Link>
+        {auth.isAdmin && (
+          <Link
+            className="h5 text-decoration-none"
+            to="/admin"
+            onClick={toggleDrawer}
+          >
+            Admin
+          </Link>
+        )}
 
         <Link className="h5 text-decoration-none" to="/" onClick={toggleDrawer}>
           Catalog

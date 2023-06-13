@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
+import { useGetCategories } from "../../hooks/useGetCategories";
 
 const initialState = {
   name: "",
@@ -9,6 +10,7 @@ const initialState = {
     file: undefined,
     data: undefined,
   },
+  description: "",
   numInStock: 0,
 };
 
@@ -19,8 +21,16 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
     (prevState, newState) => ({ ...prevState, ...newState }),
     { ...game, category: game?.category?.categoryEnum } ?? initialState
   );
+  const [categories, setCategories] = useState([]);
+  const [showCategoryFields, toggleShowCategoryFields] = useState(false);
+  const [categoryName, setCategoryName] = useState("");
+  const [categoryEnum, setCategoryEnum] = useState("");
 
-  const { name, category, price, image, numInStock } = uploadState;
+  useEffect(() => {
+    getCategories();
+  }, []);
+
+  const { name, category, price, image, description, numInStock } = uploadState;
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -42,7 +52,7 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
     uploadDispatch({ ...uploadState, [name]: value });
   };
 
-  const handleUpload = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     const formData = new FormData();
@@ -54,33 +64,19 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
     formData.append("numInStock", numInStock);
 
     if (game) {
-      const response = await axiosPrivate.put(
-        `/admin/update/?id=${game._id}`,
-        formData
-      );
-
-      resetGamesData();
-      toggleShow(false);
+      await axiosPrivate.put(`/admin/update/?id=${game._id}`, formData);
     } else {
       await axiosPrivate.post("/admin/create", formData);
-
-      resetGamesData();
-      toggleShow(false);
     }
+
+    resetGamesData();
+    toggleShow(false);
   };
-
-  const [categories, setCategories] = useState([]);
-
-  const [showCategoryFields, toggleShowCategoryFields] = useState(false);
 
   const getCategories = async () => {
     const response = await axiosPrivate.get("/admin/categories");
     setCategories(response.data);
   };
-
-  useEffect(() => {
-    getCategories();
-  }, []);
 
   const handleNewCategory = async () => {
     await axiosPrivate.post("/admin/create/category", {
@@ -90,32 +86,43 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
 
     await getCategories();
 
+    setCategoryName("");
+    setCategoryEnum("");
     toggleShowCategoryFields(false);
   };
 
-  const [categoryName, setCategoryName] = useState("");
-  const [categoryEnum, setCategoryEnum] = useState("");
-
   return (
     <form className="d-flex flex-column gap-3">
-      <fieldset className="mb-3">
+      <fieldset className="d-flex gap-4 mb-3">
         <input
-          type="text"
           name="name"
           value={name}
           onChange={handleChange}
+          type="text"
           placeholder="Name"
+        />
+
+        <input
+          name="price"
+          value={price}
+          onChange={handleChange}
+          type="text"
+          placeholder="Price"
         />
       </fieldset>
 
-      <fieldset className="d-flex gap-3 mb-3">
-        <select name="category" onChange={handleChange}>
+      <fieldset className="d-flex gap-4 mb-3">
+        <select
+          className={(!category || category === "INIT") && "text-muted"}
+          name="category"
+          onChange={handleChange}
+        >
           <option value="INIT">Category</option>
 
           {categories.map((option) => (
             <option
               value={option.categoryEnum}
-              selected={uploadState.category === option.categoryEnum}
+              selected={category === option.categoryEnum}
               key={`category-${option.categoryEnum}`}
             >
               {option.categoryName}
@@ -123,52 +130,41 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
           ))}
         </select>
 
-        {!showCategoryFields && (
-          <button
-            className="btn-tertiary"
-            type="button"
-            onClick={() => toggleShowCategoryFields((prevState) => !prevState)}
-          >
-            Add Category
-          </button>
-        )}
+        <button
+          className="btn-secondary"
+          onClick={() => toggleShowCategoryFields((prevState) => !prevState)}
+          type="button"
+          disabled={showCategoryFields}
+        >
+          New Category
+        </button>
       </fieldset>
 
       {showCategoryFields && (
-        <form className="d-flex gap-3">
-          <fieldset className="d-flex flex-column">
-            <input
-              type="text"
-              value={categoryName}
-              onChange={(event) => setCategoryName(event.target.value)}
-              placeholder="Category Name"
-            />
-          </fieldset>
+        <fieldset className="d-flex gap-3 mb-3">
+          <input
+            value={categoryName}
+            onChange={(event) => setCategoryName(event.target.value)}
+            type="text"
+            placeholder="Category Name"
+          />
 
-          <fieldset className="d-flex flex-column">
-            <input
-              type="text"
-              value={categoryEnum}
-              onChange={(event) => setCategoryEnum(event.target.value)}
-              placeholder="Category Enum"
-            />
-          </fieldset>
+          <input
+            value={categoryEnum}
+            onChange={(event) => setCategoryEnum(event.target.value)}
+            type="text"
+            placeholder="Category Enum"
+          />
 
-          <button type="button" onClick={handleNewCategory}>
-            Add Category
+          <button
+            className="btn-secondary"
+            onClick={handleNewCategory}
+            type="button"
+          >
+            Submit
           </button>
-        </form>
+        </fieldset>
       )}
-
-      <fieldset className="mb-3">
-        <input
-          type="text"
-          name="price"
-          value={price}
-          onChange={handleChange}
-          placeholder="Price"
-        />
-      </fieldset>
 
       <fieldset className="mb-3">
         <label className="d-block h6 mb-3">Image</label>
@@ -180,31 +176,39 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
           onChange={handleFileChange}
         />
 
-        {image?.file && (
-          <img width={200} height={300} src={image?.data} alt="" />
-        )}
+        {image?.file && <img width={200} height={300} src={image?.data} />}
       </fieldset>
 
-      <fieldset className="d-flex flex-column mb-5">
-        <input
-          type="text"
-          name="numInStock"
-          value={numInStock}
+      <fieldset className="mb-3">
+        <textarea
+          name="description"
+          value={description}
           onChange={handleChange}
-          placeholder="Quantity"
+          type="text"
+          placeholder="Description"
         />
       </fieldset>
 
-      <div className="d-flex gap-3">
+      <fieldset className="w-25 mb-3">
+        <input
+          name="numInStock"
+          value={numInStock}
+          onChange={handleChange}
+          type="text"
+          placeholder="Qty"
+        />
+      </fieldset>
+
+      <div className="d-flex gap-4">
         <button
-          className="btn-secondary"
-          onClick={handleUpload}
+          className="btn-secondary w-50"
+          onClick={handleSubmit}
           disabled={!image}
         >
-          Upload
+          {game ? "Edit" : "Create"}
         </button>
 
-        <button className="delete-btn mb-4">Delete</button>
+        {game && <button className="delete-btn w-50 mb-5">Delete</button>}
       </div>
     </form>
   );

@@ -32,10 +32,7 @@
   box-sizing: content-box;
   height: 44px;
   min-height: 44px;
-  /* padding: 1rem 2rem; */
-  text-align: center;
-  white-space: nowrap;
-  width: 300px;
+  width: 100%;
 }
 .delete-btn:hover {
   filter: brightness(0.9);

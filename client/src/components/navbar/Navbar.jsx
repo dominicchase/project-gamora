@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import useAuth from "../../hooks/useAuth";
 import { AuthButton } from "./AuthButton";
 import { MobileNavbar } from "./MobileNavbar";
 import { Search } from "./Search";
@@ -8,6 +9,7 @@ import GamoraLogo from "../../assets/gamora-logo.png";
 import "../../assets/css/navbar.css";
 
 export const Navbar = ({ toggleShowCart }) => {
+  const { auth } = useAuth();
   const [show, toggleShow] = useState(false);
 
   return (
@@ -20,12 +22,14 @@ export const Navbar = ({ toggleShowCart }) => {
         </div>
 
         <div className="col-6 d-flex justify-content-center align-items-center gap-4">
-          <Link
-            className="h5 text-decoration-none align-middle text-center"
-            to="/admin"
-          >
-            Admin
-          </Link>
+          {auth.isAdmin && (
+            <Link
+              className="h5 text-decoration-none align-middle text-center"
+              to="/admin"
+            >
+              Admin
+            </Link>
+          )}
 
           <Link className="h5 text-decoration-none" to="/">
             Catalog

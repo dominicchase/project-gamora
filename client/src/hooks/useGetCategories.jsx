@@ -6,8 +6,8 @@ export const useGetCategories = () => {
 
   useEffect(() => {
     const getCategories = async () => {
-      const { data } = await axios.get("/games/categories");
-      setAllCategories(data);
+      const { data: categoryData } = await axios.get("/games/categories");
+      setAllCategories(categoryData);
     };
 
     getCategories();

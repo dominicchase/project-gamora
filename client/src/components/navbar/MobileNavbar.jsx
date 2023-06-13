@@ -6,6 +6,7 @@ import GamoraLogo from "../../assets/gamora-logo.png";
 
 export const MobileNavbar = ({ toggleShowCart }) => {
   const [show, toggleShow] = useState(false);
+
   return (
     <div className="col d-flex d-md-none justify-content-between">
       <div className="col-3 d-block my-auto">
