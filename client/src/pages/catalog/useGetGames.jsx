@@ -41,22 +41,22 @@ export const useGetGames = () => {
   useEffect(() => {
     toggleIsLoading(true);
 
-    const handleGetGames = async () => {
-      const { data } = await getGames({ page, size, categories, search });
-
-      if (page === 0) {
-        setGames(data.games);
-      } else {
-        setGames([...games, ...data.games]);
-      }
-
-      toggleHasMore(data.page < data.totalPages - 1);
-    };
-
     handleGetGames();
 
     toggleIsLoading(false);
   }, [categories, page, search]);
+
+  const handleGetGames = async () => {
+    const { data } = await getGames({ page, size, categories, search });
+
+    if (page === 0) {
+      setGames(data.games);
+    } else {
+      setGames([...games, ...data.games]);
+    }
+
+    toggleHasMore(data.page < data.totalPages - 1);
+  };
 
   const handleChangeCategory = async (event) => {
     const { value, checked } = event.target;
@@ -74,6 +74,7 @@ export const useGetGames = () => {
     games,
     categories,
     handleChangeCategory,
+    handleGetGames,
     lastGameRef,
   };
 };

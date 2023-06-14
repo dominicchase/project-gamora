@@ -22,7 +22,7 @@ export const SideDrawer = () => {
   const drawerClassName = isOpen ? "drawer-overlay open" : "drawer-overlay";
 
   return (
-    <div>
+    <div className="my-auto">
       <button
         className="bg-transparent border-0 m-0 d-block drawer-btn"
         onClick={toggleDrawer}

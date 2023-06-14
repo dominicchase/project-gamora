@@ -16,7 +16,6 @@ export const Auth = ({ toggleIsNewUser }) => {
   const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const { state } = useLocation();
   const { setAuth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const { cart } = useSelector((state) => state.cartState);
@@ -47,9 +46,11 @@ export const Auth = ({ toggleIsNewUser }) => {
   const handleLogin = async (event) => {
     event.preventDefault();
 
-    const response = await axios.post("/user/login", userState, {
-      withCredentials: true,
-    });
+    const response = await axios
+      .post("/user/login", userState, {
+        withCredentials: true,
+      })
+      .catch((err) => toast.error(err.response.data.message));
 
     await setAuth({
       id: response.data.id,
@@ -59,16 +60,15 @@ export const Auth = ({ toggleIsNewUser }) => {
 
     syncCart(response.data.id);
 
-    console.log("here");
+    toast.success("Logged in");
 
     navigate("/");
   };
 
   return (
-    <form onSubmit={handleLogin}>
-      <fieldset>
+    <form className="mt-4" onSubmit={handleLogin}>
+      <fieldset className="mx-auto col-md-6 col-xl-3 mb-4">
         <input
-          className="d-block mx-auto mb-4"
           onChange={(event) =>
             userDispatch({ ...userState, email: event.target.value })
           }
@@ -77,9 +77,8 @@ export const Auth = ({ toggleIsNewUser }) => {
         />
       </fieldset>
 
-      <fieldset className="mb-5">
+      <fieldset className="mx-auto col-md-6 col-xl-3 mb-4">
         <input
-          className="d-block mx-auto"
           onChange={(event) =>
             userDispatch({ ...userState, password: event.target.value })
           }
@@ -88,22 +87,23 @@ export const Auth = ({ toggleIsNewUser }) => {
         />
       </fieldset>
 
-      <button type="submit" className="d-block btn-secondary mx-auto mb-3">
-        Login
-      </button>
-
-      <div className="text-center">
-        <span>New to Gamora?</span>
-
-        <button
-          className="btn-no-bg"
-          onClick={() =>
-            navigate("/auth/register", { state: { from: location.pathname } })
-          }
-          type="button"
-        >
-          Register
+      <div className="mx-auto col-md-6 col-xl-3">
+        <button type="submit" className="btn-secondary mb-3">
+          Login
         </button>
+
+        <span className="d-block text-center">
+          New to Gamora?
+          <button
+            className="btn-no-bg"
+            onClick={() =>
+              navigate("/auth/register", { state: { from: location.pathname } })
+            }
+            type="button"
+          >
+            Register
+          </button>
+        </span>
       </div>
     </form>
   );

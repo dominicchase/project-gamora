@@ -64,9 +64,6 @@ export const GameInfo = ({ toggleShowGame }) => {
     }
   };
 
-  const description =
-    "Persona 5 is a fantasy based on reality which follows a group of troubled high school students: the protagonist and a collection of compatriots he meets along the way. All having lost their place to belong in a broken world, these troubled teenagers gradually realize that they are living in a toxic and dangerous society resembling a prison full of slavery, oppression and injustice, ruled by corrupted and twisted adults. They can't live with the system and can't live without it, and simply existing means they are at risk of being doomed and condemned to a life of slavery.";
-
   return (
     <>
       <div className="d-flex justify-content-between">
@@ -82,7 +79,7 @@ export const GameInfo = ({ toggleShowGame }) => {
 
       <span className="d-block mb-4">${game.price}</span>
 
-      <p className="mb-5">{description}</p>
+      <p className="mb-5">{game?.description ?? ""}</p>
 
       <div>
         <button

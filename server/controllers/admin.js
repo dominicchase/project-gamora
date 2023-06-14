@@ -4,7 +4,7 @@ const { Category } = require("../models/category");
 
 module.exports = {
   createGame: async (req, res) => {
-    const { name, category, numInStock, price } = req.body;
+    const { name, category, numInStock, price, description } = req.body;
 
     try {
       if (await Game.exists({ name })) {
@@ -21,6 +21,7 @@ module.exports = {
         name,
         category: categoryFromModel,
         price,
+        description,
         image: image.Location,
         numInStock,
       });
@@ -46,7 +47,7 @@ module.exports = {
   },
 
   updateGame: async (req, res) => {
-    const { name, category, price, numInStock } = req.body;
+    const { name, category, price, numInStock, description } = req.body;
 
     try {
       const [image] = await s3_uploadImage_v2([req.files[0]]);
@@ -61,6 +62,7 @@ module.exports = {
           ...(categoryObj && { category: categoryObj }),
           ...(image && { image: image.Location }),
           ...(numInStock && { numInStock }),
+          ...(description && { description }),
         },
         {
           new: true,

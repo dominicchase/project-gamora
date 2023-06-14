@@ -1,4 +1,5 @@
 import { useReducer } from "react";
+import { toast } from "react-hot-toast";
 import axios from "../../api/axios";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -22,11 +23,12 @@ export const Register = ({ toggleIsNewUser, syncCart }) => {
   const handleRegister = async (event) => {
     event.preventDefault();
 
-    const response = await axios.post("/user/register", { email, password });
-
-    // TODO: use toasts
+    const response = await axios
+      .post("/user/register", { email, password })
+      .catch((err) => toast.error(err.response.data.message));
 
     if (response.data) {
+      toast.success("User registered");
       navigate("/");
     }
   };
@@ -37,10 +39,9 @@ export const Register = ({ toggleIsNewUser, syncCart }) => {
   };
 
   return (
-    <form>
-      <fieldset className="mb-4">
+    <form className="mt-4">
+      <fieldset className="mx-auto col-md-6 col-xl-3 mb-4">
         <input
-          className="d-block mx-auto"
           name="email"
           value={email}
           onChange={handleChange}
@@ -49,9 +50,8 @@ export const Register = ({ toggleIsNewUser, syncCart }) => {
         />
       </fieldset>
 
-      <fieldset className="mb-4">
+      <fieldset className="mx-auto col-md-6 col-xl-3 mb-4">
         <input
-          className="d-block mx-auto"
           name="password"
           value={password}
           onChange={handleChange}
@@ -60,9 +60,8 @@ export const Register = ({ toggleIsNewUser, syncCart }) => {
         />
       </fieldset>
 
-      <fieldset className="mb-5">
+      <fieldset className="mx-auto col-md-6 col-xl-3 mb-4">
         <input
-          className="d-block mx-auto"
           name="passwordConfirmation"
           value={passwordConfirmation}
           onChange={handleChange}
@@ -71,26 +70,27 @@ export const Register = ({ toggleIsNewUser, syncCart }) => {
         />
       </fieldset>
 
-      <button
-        className="d-block btn-secondary mx-auto mb-3"
-        type="submit"
-        onClick={handleRegister}
-      >
-        Register
-      </button>
-
-      <div className="text-center">
-        <span>Already have an account?</span>
-
+      <div className="mx-auto col-md-6 col-xl-3 mb-4">
         <button
-          className="btn-no-bg"
-          onClick={() =>
-            navigate("/auth", { state: { from: location.pathname } })
-          }
-          type="button"
+          className="btn-secondary mb-3"
+          type="submit"
+          onClick={handleRegister}
         >
-          Sign in
+          Register
         </button>
+
+        <span className="d-block text-center">
+          Already have an account?
+          <button
+            className="btn-no-bg"
+            onClick={() =>
+              navigate("/auth", { state: { from: location.pathname } })
+            }
+            type="button"
+          >
+            Sign in
+          </button>
+        </span>
       </div>
     </form>
   );

@@ -14,7 +14,7 @@ export const Admin = () => {
   const [show, toggleShow] = useState(false);
   const [game, setGame] = useState(undefined);
 
-  const { games, resetGamesData } = useGetGames();
+  const { games, handleGetGames } = useGetGames();
 
   useSetOverflow(show);
 
@@ -64,7 +64,7 @@ export const Admin = () => {
       >
         <UploadForm
           toggleShow={toggleShow}
-          resetGamesData={resetGamesData}
+          handleGetGames={handleGetGames}
           game={game}
         />
       </Modal>

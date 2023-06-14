@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
+import toast from "react-hot-toast";
 import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
-import { useGetCategories } from "../../hooks/useGetCategories";
 
 const initialState = {
   name: "",
@@ -14,7 +14,7 @@ const initialState = {
   numInStock: 0,
 };
 
-export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
+export const UploadForm = ({ toggleShow, handleGetGames, game }) => {
   const axiosPrivate = useAxiosPrivate();
 
   const [uploadState, uploadDispatch] = useReducer(
@@ -60,17 +60,27 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
     formData.append("name", name);
     formData.append("category", category);
     formData.append("price", price);
+    formData.append("description", description);
     formData.append("image", image.file);
     formData.append("numInStock", numInStock);
 
+    let response;
+
     if (game) {
-      await axiosPrivate.put(`/admin/update/?id=${game._id}`, formData);
+      response = await axiosPrivate
+        .put(`/admin/update/?id=${game._id}`, formData)
+        .catch((err) => toast.error(err.response.data.message ?? "Error"));
     } else {
-      await axiosPrivate.post("/admin/create", formData);
+      response = await axiosPrivate
+        .post("/admin/create", formData)
+        .catch((err) => toast.error(err.response.data.message ?? "Error"));
     }
 
-    resetGamesData();
-    toggleShow(false);
+    if (response.data) {
+      toast.success(`Successfully edited ${game.name}`);
+      toggleShow((prevState) => !prevState);
+      handleGetGames();
+    }
   };
 
   const getCategories = async () => {
@@ -89,6 +99,17 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
     setCategoryName("");
     setCategoryEnum("");
     toggleShowCategoryFields(false);
+  };
+
+  const handleDeleteGame = async () => {
+    await axiosPrivate
+      .delete(`/admin/delete/?id=${game._id}`)
+      .catch((err) => toast.error(err.response.data.message ?? "Error"));
+
+    toast.success(`Successfully deleted ${game.name}`);
+
+    toggleShow((prevState) => !prevState);
+    handleGetGames();
   };
 
   return (
@@ -205,10 +226,18 @@ export const UploadForm = ({ toggleShow, resetGamesData, game }) => {
           onClick={handleSubmit}
           disabled={!image}
         >
-          {game ? "Edit" : "Create"}
+          {game ? "Save" : "Create"}
         </button>
 
-        {game && <button className="delete-btn w-50 mb-5">Delete</button>}
+        {game && (
+          <button
+            className="delete-btn w-50 mb-5"
+            type="button"
+            onClick={handleDeleteGame}
+          >
+            Delete
+          </button>
+        )}
       </div>
     </form>
   );

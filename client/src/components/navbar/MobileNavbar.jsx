@@ -9,15 +9,12 @@ export const MobileNavbar = ({ toggleShowCart }) => {
 
   return (
     <div className="col d-flex d-md-none justify-content-between">
-      <div className="col-3 d-block my-auto">
-        <SideDrawer />
-      </div>
+      <SideDrawer />
 
       <img src={GamoraLogo} width={120} />
 
-      <div className="col-3 d-flex justify-content-end">
+      <div className="d-flex">
         <AuthButton show={show} toggleShow={toggleShow} />
-
         <button
           className="bg-transparent border-0"
           onClick={() => toggleShowCart((prevState) => !prevState)}
