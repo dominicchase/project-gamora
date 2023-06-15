@@ -130,7 +130,7 @@ module.exports = {
         .sort({ name: 1 });
 
       if (!cart) {
-        return res.status(200).send([]);
+        return res.status(204).send([]);
       }
 
       return res.status(200).send(cart);

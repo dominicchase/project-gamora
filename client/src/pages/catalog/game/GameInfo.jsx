@@ -17,7 +17,7 @@ export const GameInfo = ({ toggleShowGame }) => {
 
   const axiosPrivate = useAxiosPrivate();
 
-  const cartGame = cart?.length
+  const cartGame = cart.length
     ? cart.find((cartGame) => cartGame.game._id === game._id)
     : null;
 
@@ -32,6 +32,8 @@ export const GameInfo = ({ toggleShowGame }) => {
     [game.numInStock, currQuantity]
   );
 
+  console.log({ cart });
+
   const handleAddToCart = async () => {
     const newCartGame = { game, quantity: 1 };
 
@@ -41,12 +43,12 @@ export const GameInfo = ({ toggleShowGame }) => {
           `/cart/add-to-cart/?id=${id}`,
           [newCartGame]
         );
-
         toast.success("Added to cart");
-
+        console.log(response);
         dispatch(setCart(response.data.games));
       } catch (error) {
-        toast.error(error);
+        console.log("here");
+        toast.error(error.response?.data?.message ?? "Error");
       }
     } else {
       if (cartGame) {

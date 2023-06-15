@@ -29,7 +29,9 @@ export const Order = () => {
   }
 
   return (
-    <div className="row">
+    <div className="row mt-4">
+      <span className="d-block col">{order.date} </span>
+
       <article className="col">
         <span className="d-block">{order.customer.name}</span>
         <span>{order.customer.email}</span>

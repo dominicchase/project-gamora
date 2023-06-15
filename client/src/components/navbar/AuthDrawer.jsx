@@ -31,7 +31,9 @@ export const AuthDrawer = ({ toggleShow }) => {
   };
 
   const handleClickOutside = (event) =>
-    ref.current && !ref.current.contains(event.target) && toggleShow(false);
+    ref.current &&
+    !ref.current.contains(event.target) &&
+    toggleShow((prevState) => !prevState);
 
   return (
     <div className="auth-drawer" ref={ref}>

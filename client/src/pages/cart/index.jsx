@@ -18,7 +18,7 @@ export const Cart = () => {
       }
     };
     getCart();
-  }, []);
+  }, [id]);
 
   const { cart } = useSelector((state) => state.cartState);
 
@@ -54,8 +54,6 @@ export const Cart = () => {
   const handlePayment = async () => {
     const cartGameIds = cart.map((cartGame) => cartGame._id);
     const response = await axiosPrivate.post(`/pay/?userId=${id}`, cartGameIds);
-
-    dispatch(setCart([]));
 
     window.location.href = response.data.url;
   };

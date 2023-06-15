@@ -1,12 +1,12 @@
-.game-card-img {
+.game-img {
   aspect-ratio: 2 / 3;
   border-radius: 5px;
   cursor: pointer;
   transition: transform 0.15s ease-in-out;
+  width: 100%;
 }
 
-.game-card-img:hover {
-  /* filter: brightness(0.5); */
+.game-img:hover {
   transform: scale(1.05);
 }
 

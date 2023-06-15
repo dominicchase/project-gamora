@@ -1,14 +1,36 @@
 import { useDispatch } from "react-redux";
 import { useGetGames } from "./useGetGames";
 import { useGetCategories } from "../../hooks/useGetCategories";
-import { GameCard } from "../../components/GameCard";
 import { setGame } from "../../store/reducers/GameReducer";
 import "../../assets/css/games.css";
+import { useAxiosPrivate } from "../../hooks/useAxiosPrivate";
+import { useEffect } from "react";
+import useAuth from "../../hooks/useAuth";
+import { setCart } from "../../store/reducers/CartReducer";
+import { toast } from "react-hot-toast";
 
 export const Catalog = ({ toggleShowGame }) => {
   const dispatch = useDispatch();
+  const { id } = useAuth();
+  const axiosPrivate = useAxiosPrivate();
   const { games, categories, handleChangeCategory, lastGameRef } =
     useGetGames();
+
+  useEffect(() => {
+    const getCart = async () => {
+      const response = await axiosPrivate.get(`/cart/?id=${id}`);
+
+      if (response.status === 204) {
+        dispatch(setCart([]));
+      } else {
+        dispatch(setCart(response.data.games));
+      }
+    };
+
+    if (id) {
+      getCart();
+    }
+  }, [id]);
 
   const { allCategories } = useGetCategories();
 
@@ -18,7 +40,7 @@ export const Catalog = ({ toggleShowGame }) => {
   };
 
   return games.length ? (
-    <div className="d-flex justify-content-between">
+    <div className="d-block d-md-flex justify-content-between">
       <div className="games-category col-3 d-none d-md-block ps-4">
         <strong className="d-block mb-3 mt-4 h5">Category</strong>
 
@@ -37,14 +59,16 @@ export const Catalog = ({ toggleShowGame }) => {
         ))}
       </div>
 
-      <div className="row px-4 pt-4">
+      <div className="row px-4 pt-4 w-100 h-50 m-0">
         {games.map((game, index) => (
-          <GameCard
-            game={game}
-            handleClick={handleClick}
-            lastGameRef={index === games.length - 1 ? lastGameRef : null}
-            key={`game-${game._id}`}
-          />
+          <article
+            className="col-6 col-sm-4 col-xl-3 mb-4 bg-transparent border-0"
+            onClick={() => handleClick(game)}
+            ref={index === games.length - 1 ? lastGameRef : null}
+            key={game._id}
+          >
+            <img className="game-img" src={game.image} />
+          </article>
         ))}
       </div>
     </div>

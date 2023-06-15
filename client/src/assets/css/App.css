@@ -77,7 +77,8 @@ a,
 span,
 strong,
 p,
-label {
+label,
+address {
   color: var(--light-gray);
 }
 
@@ -268,8 +269,9 @@ select {
   border-bottom: 2px solid var(--primary);
 }
 
-.game-img {
-  aspect-ratio: 2 / 3;
+.img-container {
+  height: fit-content;
+  /* aspect-ratio: 2 / 3 !important; */
 }
 
 /* Extra small devices (phones, 600px and down) */
